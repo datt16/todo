@@ -4,6 +4,7 @@ import './App.css'
 const Main = () => {
   const [newTaskTitle, setTaskTitle] = useState("")
   const [tasks, setTasks] = useState([])
+  const [doneTasks, setDoneTasks] = useState([])
 
   const AddTask = (title) => {
     setTasks([
@@ -11,6 +12,22 @@ const Main = () => {
         "title": title,
         "id": parseInt(Date.now() * Math.random()).toString()
       }
+    ])
+  }
+
+  const FinishTask = (task) => {
+    setDoneTasks([
+      ...doneTasks, task
+    ])
+    const target = task.id
+    setTasks(tasks.filter(item => item.id !== target))
+  }
+
+  const RevertTask = (task) => {
+    const target = task.id
+    setDoneTasks(doneTasks.filter(item => item.id !== target))
+    setTasks([
+      ...tasks, task
     ])
   }
 
@@ -26,7 +43,7 @@ const Main = () => {
         <ul>
           {tasks.map((task) => (
             <li key={task.id}>
-              <input type="checkbox"></input>
+              <input type="checkbox" onClick={() => FinishTask(task)}></input>
               <span>{task.title}</span>
             </li>
           ))}
@@ -35,7 +52,12 @@ const Main = () => {
       <div className="done-items">
         <h2>完了</h2>
         <ul>
-
+          {doneTasks.map((task) => (
+            <li key={task.id}>
+              <input type="checkbox" defaultChecked onClick={() => RevertTask(task)}></input>
+              <span>{task.title}</span>
+            </li>
+          ))}
         </ul>
       </div>
     </>
