@@ -7,8 +7,8 @@ const Main = () => {
   const [doneTasks, setDoneTasks] = useState([])
 
   const AddTask = (title) => {
-    setTasks([
-      ...tasks, {
+    setTasks(previousTasks => [
+      ...previousTasks, {
         "title": title,
         "id": parseInt(Date.now() * Math.random()).toString()
       }
@@ -16,18 +16,18 @@ const Main = () => {
   }
 
   const FinishTask = (task) => {
-    setDoneTasks([
-      ...doneTasks, task
+    setDoneTasks(ts => [
+      ...ts, task
     ])
     const target = task.id
-    setTasks(tasks.filter(item => item.id !== target))
+    setTasks(ts => ts.filter(item => item.id !== target))
   }
 
   const RevertTask = (task) => {
     const target = task.id
-    setDoneTasks(doneTasks.filter(item => item.id !== target))
-    setTasks([
-      ...tasks, task
+    setDoneTasks(ts => ts.filter(item => item.id !== target))
+    setTasks(ts => [
+      ...ts, task
     ])
   }
 
