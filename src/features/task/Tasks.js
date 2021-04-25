@@ -3,7 +3,7 @@ import { Checkbox, Box } from "@material-ui/core"
 import { useSelector, useDispatch } from "react-redux"
 import { toggleComplete } from "./taskSlice"
 
-import styles from "../../index.css"
+import styles from "../../App.module.css"
 
 export const Tasks = () => {
   const taskList = useSelector(state => state.tasker.tasks)
@@ -12,7 +12,7 @@ export const Tasks = () => {
   return (
     <div>
       <Box display="block" className="incomplete-items">
-        <h2>未完了</h2>
+        <h2>タスクリスト</h2>
         <ul className={styles.taskList}>
           {taskList.map(task => (
             <li key={task.id}>
@@ -20,7 +20,11 @@ export const Tasks = () => {
                 onChange={() => dispatch(toggleComplete(task.id))}
                 checked={task.completed}
               ></Checkbox>
-              <span>{task.title}</span>
+              {task.completed ? (
+                <span className={styles.completed}>{task.title}</span>
+              ) : (
+                <span>{task.title}</span>
+              )}
             </li>
           ))}
         </ul>

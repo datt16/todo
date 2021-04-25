@@ -11,3 +11,7 @@
 .taskList {
   list-style: none;
 }
+
+.completed {
+  text-decoration: line-through;
+}
