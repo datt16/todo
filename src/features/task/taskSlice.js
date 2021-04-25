@@ -1,37 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 export const slice = createSlice({
-  name: "tasks",
+  name: "counter",
   initialState: {
     tasks: [],
-    doneTasks: [],
   },
   reducers: {
-    addTask: (state, obj) => {
+    add: (state, title) => {
       state.tasks.push({
-        id: parseInt(Date.now() * Math.random()).toString(),
-        title: obj.title,
+        title: title.payload,
         done: false,
+        id: parseInt(Date.now() * Math.random()).toString(),
       })
+    },
+    remove: (state, target) => {
+      state.tasks = state.tasks.filter(item => item.id !== target.payload)
+      console.log(state.tasks.value)
     },
   },
 })
 
-export const { addTask } = slice.actions
-
-// The function below is called a thunk and allows us to perform async logic. It
-// can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
-// will call the thunk with the `dispatch` function as the first argument. Async
-// code can then be executed and other actions can be dispatched
-// export const incrementAsync = amount => dispatch => {
-//   setTimeout(() => {
-//     dispatch(incrementByAmount(amount))
-//   }, 1000)
-// }
-
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state) => state.counter.value)`
-// export const selectCount = state => state.counter.value
+export const { add, remove } = slice.actions
 
 export default slice.reducer

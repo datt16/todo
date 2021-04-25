@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Box, Checkbox } from "@material-ui/core"
 import styles from "./App.module.css"
+import { Tasks } from "./features/task/Tasks"
 import { Counter } from "./features/counter/Counter"
 
 const Main = () => {
@@ -86,6 +87,7 @@ const App = () => {
       </header>
       <Box display="container" p={1}>
         <Main />
+        <Tasks />
         <Counter />
       </Box>
     </div>
