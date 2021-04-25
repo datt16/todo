@@ -21,7 +21,6 @@ export const Tasks = () => {
               remove
             </button>
             <span>{task.title}</span>
-            <span>{task.id}</span>
           </li>
         ))}
       </ul>
