@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Box, Checkbox } from "@material-ui/core"
 import styles from "./App.module.css"
+import { Counter } from "./features/counter/Counter"
 
 const Main = () => {
   const [newTaskTitle, setTaskTitle] = useState("")
@@ -13,7 +14,7 @@ const Main = () => {
       {
         title: title,
         id: parseInt(Date.now() * Math.random()).toString(),
-  },
+      },
     ])
   }
 
@@ -85,6 +86,7 @@ const App = () => {
       </header>
       <Box display="container" p={1}>
         <Main />
+        <Counter />
       </Box>
     </div>
   )
