@@ -1,6 +1,9 @@
 import React from "react"
+import { Checkbox, Box } from "@material-ui/core"
 import { useSelector, useDispatch } from "react-redux"
-import { add, remove } from "./taskSlice"
+import { toggleComplete } from "./taskSlice"
+
+import styles from "../../index.css"
 
 export const Tasks = () => {
   const taskList = useSelector(state => state.tasker.tasks)
@@ -8,22 +11,20 @@ export const Tasks = () => {
 
   return (
     <div>
-      <button aria-label="AddTask" onClick={() => dispatch(add("a"))}>
-        Add
-      </button>
-      <ul>
-        {taskList.map(task => (
-          <li key={task.id}>
-            <button
-              aria-label="Remove Task"
-              onClick={() => dispatch(remove(task.id))}
-            >
-              remove
-            </button>
-            <span>{task.title}</span>
-          </li>
-        ))}
-      </ul>
+      <Box display="block" className="incomplete-items">
+        <h2>未完了</h2>
+        <ul className={styles.taskList}>
+          {taskList.map(task => (
+            <li key={task.id}>
+              <Checkbox
+                onChange={() => dispatch(toggleComplete(task.id))}
+                checked={task.completed}
+              ></Checkbox>
+              <span>{task.title}</span>
+            </li>
+          ))}
+        </ul>
+      </Box>
     </div>
   )
 }
