@@ -2,22 +2,20 @@ import React, { useState, useEffect } from "react"
 import firebase from "./Firebase"
 
 const Auth = () => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState()
 
   const logout = () => {
     firebase.auth().signOut()
-    console.log("logout")
   }
 
   const login = () => {
     const provider = new firebase.auth.GoogleAuthProvider()
     firebase.auth().signInWithRedirect(provider)
-    console.log(user)
   }
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
-      setUser( user )
+      setUser(user)
     })
   })
 

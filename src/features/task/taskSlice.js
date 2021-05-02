@@ -1,19 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 export const slice = createSlice({
-  name: "counter",
+  name: "tasker",
   initialState: {
     tasks: [],
   },
   reducers: {
     add: (state, action) => {
       const title = action.payload
-      state.tasks.push({
+      const task = {
         title: title,
         completed: false,
         id: parseInt(Date.now() * Math.random()).toString(),
         created: Date.now().toString(),
-      })
+      }
+      state.tasks.push(task)
     },
     remove: (state, action) => {
       const target = action.payload
