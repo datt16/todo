@@ -21,7 +21,7 @@ const Auth = () => {
 
   return (
     <div>
-      <p className="App-intro">UID: {user && user.uid}</p>
+      <p className="App-intro">UID: {user && user.displayName}</p>
       {user ? (
         <button onClick={() => logout()}>Google Logout</button>
       ) : (
