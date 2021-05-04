@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { Checkbox, Box } from "@material-ui/core"
 import { useSelector, useDispatch } from "react-redux"
-import { toggleComplete, fetchItems, selectTask } from "./taskSlice"
+import { update, fetchItems, selectTask } from "./taskSlice"
 
 import styles from "../../App.module.css"
 
@@ -29,7 +29,7 @@ export const Tasks = () => {
           {tasks.map(task => (
             <li key={task.id}>
               <Checkbox
-                onChange={() => dispatch(toggleComplete(task.id))}
+                onChange={() => dispatch(update(task.id))}
                 checked={task.completed}
               ></Checkbox>
               {task.completed ? (

@@ -33,8 +33,8 @@ export const slice = createSlice({
       state.tasks = state.tasks.filter(item => item.id !== target)
     },
     toggleComplete: (state, action) => {
-      const target = action.payload
-      const item = state.tasks.find(item => item.id === target)
+      const targetID = action.payload
+      const item = state.tasks.find(item => item.id === targetID)
       if (item) {
         item.completed = !item.completed
       }
@@ -52,8 +52,20 @@ export const slice = createSlice({
       state.error = null
       state.tasks = action.payload
     },
+    updateTaskSuccess: state => {
+      state.loading = false
+      state.error = null
+    },
   },
 })
+
+const updateTask = async action => {
+  const data = action
+  const targetID = data.targetID
+  const changedTask = data.task
+  const ref = db.collection("tasks").doc(targetID)
+  await ref.update(changedTask)
+}
 
 const getTasks = async () => {
   const colRef = db.collection("tasks").orderBy("title")
@@ -69,6 +81,7 @@ export const {
   fetchStart,
   fetchSuccess,
   fetchFailure,
+  updateTaskSuccess,
 } = slice.actions
 
 export const selectTask = ({ tasker }) => tasker
@@ -77,6 +90,22 @@ export const fetchItems = () => async dispatch => {
   try {
     dispatch(fetchStart())
     dispatch(fetchSuccess(await getTasks()))
+  } catch (error) {
+    dispatch(fetchFailure(error.stack))
+  }
+}
+
+export const update = target => async (dispatch, getState) => {
+  dispatch(toggleComplete(target))
+  const state = getState().tasker
+  const data = {
+    targetID: target,
+    task: state.tasks.find(item => item.id === target),
+  }
+  try {
+    dispatch(fetchStart())
+    await updateTask(data)
+    dispatch(updateTaskSuccess())
   } catch (error) {
     dispatch(fetchFailure(error.stack))
   }
