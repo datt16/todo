@@ -28,10 +28,6 @@ export const slice = createSlice({
         id: docId,
       })
     },
-    remove: (state, action) => {
-      const target = action.payload
-      state.tasks = state.tasks.filter(item => item.id !== target)
-    },
     toggleComplete: (state, action) => {
       const targetID = action.payload
       const item = state.tasks.find(item => item.id === targetID)
@@ -42,6 +38,7 @@ export const slice = createSlice({
     fetchStart: state => {
       state.loading = true
       state.error = null
+      state.tasks = []
     },
     fetchFailure: (state, action) => {
       state.loading = false
@@ -51,10 +48,6 @@ export const slice = createSlice({
       state.loading = false
       state.error = null
       state.tasks = action.payload
-    },
-    updateTaskSuccess: state => {
-      state.loading = false
-      state.error = null
     },
   },
 })
@@ -67,11 +60,52 @@ const updateTask = async action => {
   await ref.update(changedTask)
 }
 
+export const RemoveTask = async target => {
+  const targetID = target
+  const ref = db.collection("tasks").doc(targetID)
+  await ref.delete()
+}
+
 const getTasks = async () => {
   const colRef = db.collection("tasks").orderBy("title")
   const snapshots = await colRef.get()
   const docs = snapshots.docs.map(doc => doc.data())
   return docs
+}
+
+export const fetchItems = () => async dispatch => {
+  try {
+    dispatch(fetchStart())
+    dispatch(fetchSuccess(await getTasks()))
+  } catch (error) {
+    dispatch(fetchFailure(error.stack))
+  }
+}
+
+export const toggleTaskCompleted = target => async (dispatch, getState) => {
+  dispatch(toggleComplete(target))
+  const state = getState().tasker
+  const data = {
+    targetID: target,
+    task: state.tasks.find(item => item.id === target),
+  }
+  try {
+    dispatch(fetchStart())
+    await updateTask(data)
+    dispatch(fetchSuccess(await getTasks()))
+  } catch (error) {
+    dispatch(fetchFailure(error.stack))
+  }
+}
+
+export const RemoveTaskItem = target => async dispatch => {
+  try {
+    dispatch(fetchStart())
+    await RemoveTask(target)
+    dispatch(fetchSuccess(await getTasks()))
+  } catch (error) {
+    dispatch(fetchFailure(error.stack))
+  }
 }
 
 export const {
@@ -85,30 +119,5 @@ export const {
 } = slice.actions
 
 export const selectTask = ({ tasker }) => tasker
-
-export const fetchItems = () => async dispatch => {
-  try {
-    dispatch(fetchStart())
-    dispatch(fetchSuccess(await getTasks()))
-  } catch (error) {
-    dispatch(fetchFailure(error.stack))
-  }
-}
-
-export const update = target => async (dispatch, getState) => {
-  dispatch(toggleComplete(target))
-  const state = getState().tasker
-  const data = {
-    targetID: target,
-    task: state.tasks.find(item => item.id === target),
-  }
-  try {
-    dispatch(fetchStart())
-    await updateTask(data)
-    dispatch(updateTaskSuccess())
-  } catch (error) {
-    dispatch(fetchFailure(error.stack))
-  }
-}
 
 export default slice.reducer

@@ -1,13 +1,17 @@
 import React, { useEffect } from "react"
 import { Checkbox, Box } from "@material-ui/core"
 import { useSelector, useDispatch } from "react-redux"
-import { update, fetchItems, selectTask } from "./taskSlice"
+import {
+  toggleTaskCompleted,
+  fetchItems,
+  selectTask,
+  RemoveTaskItem,
+} from "./taskSlice"
 
 import styles from "../../App.module.css"
 
 export const Tasks = () => {
   const dispatch = useDispatch()
-
   const { tasks, loading, error } = useSelector(selectTask)
 
   useEffect(() => {
@@ -29,7 +33,7 @@ export const Tasks = () => {
           {tasks.map(task => (
             <li key={task.id}>
               <Checkbox
-                onChange={() => dispatch(update(task.id))}
+                onChange={() => dispatch(toggleTaskCompleted(task.id))}
                 checked={task.completed}
               ></Checkbox>
               {task.completed ? (
@@ -37,6 +41,13 @@ export const Tasks = () => {
               ) : (
                 <span>{task.title}</span>
               )}
+              <button
+                onClick={() => {
+                  dispatch(RemoveTaskItem(task.id))
+                }}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>
