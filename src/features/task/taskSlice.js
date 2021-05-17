@@ -9,23 +9,17 @@ export const slice = createSlice({
     error: null,
   },
   reducers: {
-    add: (state, action) => {
-      const title = action.payload
-      const docId = db.collection("tasks").doc().id
+    // firestoreにデータを追加するだけ
+    add: action => {
+      const prop = action.payload
+      const title = prop.Title
+      const uid = prop.UID
       const createdDate = Date.now().toString()
-      const task = {
-        title: title,
-        completed: false,
-        id: docId,
-        created: createdDate,
-      }
-      state.tasks.push(task)
 
-      db.collection("tasks").doc(docId).set({
+      db.collection("users").doc(uid).collection("tasks").add({
         title: title,
         completed: false,
         created: createdDate,
-        id: docId,
       })
     },
     toggleComplete: (state, action) => {
@@ -66,6 +60,7 @@ export const RemoveTask = async target => {
   await ref.delete()
 }
 
+// uid対応済み
 const getTasks = async uid => {
   const colRef = db
     .collection("users")
@@ -73,7 +68,16 @@ const getTasks = async uid => {
     .collection("tasks")
     .orderBy("title")
   const snapshots = await colRef.get()
-  const docs = snapshots.docs.map(doc => doc.data())
+  var docs = []
+  snapshots.docs.forEach(doc => {
+    const data = doc.data()
+    docs.push({
+      title: data.title,
+      completed: data.completed,
+      created: data.createdDate,
+      id: doc.id,
+    })
+  })
   return docs
 }
 
@@ -115,6 +119,16 @@ export const RemoveTaskItem = target => async dispatch => {
   } catch (error) {
     dispatch(fetchFailure(error.stack))
   }
+}
+
+// uid対応
+export const CreateNewTask = title => (dispatch, getState) => {
+  const uid = getState().user.uid
+  const prop = {
+    Title: title,
+    UID: uid,
+  }
+  dispatch(add(prop))
 }
 
 export const {

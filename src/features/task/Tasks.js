@@ -27,7 +27,6 @@ export const Tasks = () => {
 
   return (
     <div>
-      {" "}
       <Box display="block" className="incomplete-items">
         <h2>タスクリスト</h2>
         <ul className={styles.taskList}>
