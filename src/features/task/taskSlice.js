@@ -66,10 +66,10 @@ export const RemoveTask = async target => {
   await ref.delete()
 }
 
-const getTasks = async () => {
+const getTasks = async uid => {
   const colRef = db
     .collection("users")
-    .doc("mj6aaeHKFRQ80DYkdf9xoYq8X6t1")
+    .doc(uid)
     .collection("tasks")
     .orderBy("title")
   const snapshots = await colRef.get()
@@ -77,10 +77,15 @@ const getTasks = async () => {
   return docs
 }
 
-export const fetchItems = () => async dispatch => {
+export const fetchItems = () => async (dispatch, getState) => {
+  const uid = getState().user.uid
   try {
     dispatch(fetchStart())
-    dispatch(fetchSuccess(await getTasks()))
+    if (uid) {
+      dispatch(fetchSuccess(await getTasks(uid)))
+    } else {
+      dispatch(fetchFailure("ログインされていません"))
+    }
   } catch (error) {
     dispatch(fetchFailure(error.stack))
   }
