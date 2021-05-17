@@ -8,16 +8,17 @@ import Auth from "./Auth"
 const App = () => {
   return (
     <div>
-      <Auth></Auth>
-      <div className="App">
-        <header className={styles.appHeader}>
-          <p>Todo</p>
-        </header>
-        <Box display="container" p={1}>
-          <InputForm />
-          <Tasks />
-        </Box>
-      </div>
+      <Auth>
+        <div className="App">
+          <header className={styles.appHeader}>
+            <p>Todo</p>
+          </header>
+          <Box display="container" p={1}>
+            <InputForm />
+            <Tasks />
+          </Box>
+        </div>
+      </Auth>
     </div>
   )
 }
