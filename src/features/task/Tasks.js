@@ -1,23 +1,38 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Checkbox, Box } from "@material-ui/core"
 import { useSelector, useDispatch } from "react-redux"
-import { toggleComplete } from "./taskSlice"
+import {
+  toggleTaskCompleted,
+  fetchItems,
+  selectTask,
+  RemoveTaskItem,
+} from "./taskSlice"
 
 import styles from "../../App.module.css"
 
 export const Tasks = () => {
-  const taskList = useSelector(state => state.tasker.tasks)
   const dispatch = useDispatch()
+  const { tasks, loading, error } = useSelector(selectTask)
+
+  useEffect(() => {
+    dispatch(fetchItems())
+  }, [dispatch])
+
+  if (loading) {
+    return <p>Now loading...</p>
+  }
+  if (error) {
+    return <p>{error}</p>
+  }
 
   return (
-    <div>
-      <Box display="block" className="incomplete-items">
+    <div>      <Box display="block" className="incomplete-items">
         <h2>タスクリスト</h2>
         <ul className={styles.taskList}>
-          {taskList.map(task => (
+          {tasks.map(task => (
             <li key={task.id}>
               <Checkbox
-                onChange={() => dispatch(toggleComplete(task.id))}
+                onChange={() => dispatch(toggleTaskCompleted(task.id))}
                 checked={task.completed}
               ></Checkbox>
               {task.completed ? (
@@ -25,6 +40,13 @@ export const Tasks = () => {
               ) : (
                 <span>{task.title}</span>
               )}
+              <button
+                onClick={() => {
+                  dispatch(RemoveTaskItem(task.id))
+                }}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>
