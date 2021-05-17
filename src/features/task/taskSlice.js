@@ -10,7 +10,7 @@ export const slice = createSlice({
   },
   reducers: {
     // firestoreにデータを追加するだけ
-    add: action => {
+    add: (stete, action) => {
       const prop = action.payload
       const title = prop.Title
       const uid = prop.UID
