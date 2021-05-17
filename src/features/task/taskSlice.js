@@ -67,7 +67,11 @@ export const RemoveTask = async target => {
 }
 
 const getTasks = async () => {
-  const colRef = db.collection("tasks").orderBy("title")
+  const colRef = db
+    .collection("users")
+    .doc("mj6aaeHKFRQ80DYkdf9xoYq8X6t1")
+    .collection("tasks")
+    .orderBy("title")
   const snapshots = await colRef.get()
   const docs = snapshots.docs.map(doc => doc.data())
   return docs
