@@ -48,9 +48,12 @@ export const slice = createSlice({
 
 const updateTask = async action => {
   const data = action
+  console.log(data)
   const targetID = data.targetID
   const changedTask = data.task
-  const ref = db.collection("tasks").doc(targetID)
+
+  const uid = data.UID
+  const ref = db.collection("users").doc(uid).collection("tasks").doc(targetID)
   await ref.update(changedTask)
 }
 
@@ -74,7 +77,7 @@ const getTasks = async uid => {
     docs.push({
       title: data.title,
       completed: data.completed,
-      created: data.createdDate,
+      created: data.created,
       id: doc.id,
     })
   })
@@ -97,15 +100,21 @@ export const fetchItems = () => async (dispatch, getState) => {
 
 export const toggleTaskCompleted = target => async (dispatch, getState) => {
   dispatch(toggleComplete(target))
+  const uid = getState().user.uid
   const state = getState().tasker
+  const targetItem = state.tasks.find(item => item.id === target)
   const data = {
+    UID: uid,
     targetID: target,
-    task: state.tasks.find(item => item.id === target),
+    task: {
+      title: targetItem.title,
+      completed: targetItem.completed,
+      created: targetItem.created,
+    },
   }
   try {
-    dispatch(fetchStart())
+    console.log("data", data)
     await updateTask(data)
-    dispatch(fetchSuccess(await getTasks()))
   } catch (error) {
     dispatch(fetchFailure(error.stack))
   }
