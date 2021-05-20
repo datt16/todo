@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import firebase from "./Firebase"
+import firebase from "../Firebase"
 import PropTypes from "prop-types"
 
-import { Login, Logout } from "./features/user/userSlice"
+import { Login, Logout } from "../features/user/userSlice"
 
 const Auth = props => {
-  const [user, setUser] = useState()
   const dispatch = useDispatch()
   const signed = useSelector(state => state.user.signed)
+  const [user, setUser] = useState()
 
   const logout = () => {
     dispatch(Logout())
@@ -24,7 +24,12 @@ const Auth = props => {
     firebase.auth().onAuthStateChanged(user => {
       setUser(user)
       if (user) {
-        dispatch(Login(user.uid))
+        dispatch(
+          Login({
+            uid: user.uid,
+            iconUrl: user.photoURL,
+          })
+        )
       }
     })
   }, [])
@@ -45,5 +50,7 @@ const Auth = props => {
 Auth.propTypes = {
   children: PropTypes.any,
 }
+
+export { Login, Logout }
 
 export default Auth

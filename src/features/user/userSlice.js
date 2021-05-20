@@ -5,16 +5,19 @@ export const slice = createSlice({
   initialState: {
     uid: null,
     signed: false,
+    iconURL: null,
   },
   reducers: {
     Login: (state, action) => {
-      const UID = action.payload
-      state.uid = UID
+      const data = action.payload
+      state.uid = data.uid
       state.signed = true
+      state.iconURL = data.iconUrl
     },
     Logout: state => {
       state.uid = null
       state.signed = false
+      state.iconURL = null
     },
   },
 })
