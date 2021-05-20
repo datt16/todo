@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import firebase from "./Firebase"
+import PropTypes from "prop-types"
 
 import { Login, Logout } from "./features/user/userSlice"
 
-const Auth = () => {
+const Auth = props => {
   const [user, setUser] = useState()
   const dispatch = useDispatch()
+  const signed = useSelector(state => state.user.signed)
 
   const logout = () => {
     dispatch(Logout())
@@ -25,7 +27,7 @@ const Auth = () => {
         dispatch(Login(user.uid))
       }
     })
-  })
+  }, [])
 
   return (
     <div>
@@ -35,8 +37,13 @@ const Auth = () => {
       ) : (
         <button onClick={() => login()}>Google Login</button>
       )}
+      {signed ? <div>{props.children}</div> : <p>ログインしてください</p>}
     </div>
   )
+}
+
+Auth.propTypes = {
+  children: PropTypes.any,
 }
 
 export default Auth

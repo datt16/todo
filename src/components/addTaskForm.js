@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useDispatch } from "react-redux"
-import { add } from "../features/task/taskSlice"
+import { CreateNewTask } from "../features/task/taskSlice"
 
 export const InputForm = () => {
   const [newTaskTitle, setTaskTitle] = useState("")
@@ -8,7 +8,7 @@ export const InputForm = () => {
 
   const submit = e => {
     const target = e.target
-    dispatch(add(newTaskTitle))
+    dispatch(CreateNewTask(newTaskTitle))
     setTaskTitle("")
     target.value = ""
   }
