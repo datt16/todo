@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { Checkbox, Box } from "@material-ui/core"
+import { Checkbox, Box, Typography } from "@material-ui/core"
 import { useSelector, useDispatch } from "react-redux"
 import {
   toggleTaskCompleted,
@@ -7,6 +7,9 @@ import {
   selectTask,
   RemoveTaskItem,
 } from "./taskSlice"
+
+import IconButton from "@material-ui/core/IconButton"
+import DeleteIcon from "@material-ui/icons/Delete"
 
 import styles from "../../App.module.css"
 
@@ -37,17 +40,28 @@ export const Tasks = () => {
                 checked={task.completed}
               ></Checkbox>
               {task.completed ? (
-                <span className={styles.completed}>{task.title}</span>
+                <Typography
+                  variant="h6"
+                  className={(styles.completed, styles.taskItem)}
+                >
+                  {task.title}
+                </Typography>
               ) : (
-                <span>{task.title}</span>
+                <span className={(styles.taskItem, styles.taskTitle)}>
+                  {task.title}
+                </span>
               )}
-              <button
-                onClick={() => {
-                  dispatch(RemoveTaskItem(task.id))
-                }}
-              >
-                Delete
-              </button>
+              <span className={styles.taskItem}>{task.created}</span>
+              <div className={styles.taskItem}>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => {
+                    dispatch(RemoveTaskItem(task.id))
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </div>
             </li>
           ))}
         </ul>

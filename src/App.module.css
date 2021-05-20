@@ -8,6 +8,15 @@
   color: white;
 }
 
+.taskItem {
+  margin-left: 1.5rem;
+  display: inline;
+}
+
+.taskTitle {
+  font-size: 20px;
+}
+
 .taskList {
   list-style: none;
 }
