@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import moment from "moment"
 import { db } from "../../Firebase"
 
 export const slice = createSlice({
@@ -79,7 +80,6 @@ const getTasks = async uid => {
   return docs
 }
 
-
 /* --- actions ---*/
 
 export const fetchItems = () => async (dispatch, getState) => {
@@ -130,7 +130,7 @@ export const RemoveTaskItem = target => async (dispatch, getState) => {
 
 export const CreateNewTask = title => async (dispatch, getState) => {
   const uid = getState().user.uid
-  const createdDate = Date.now().toString()
+  const createdDate = moment().format("YYYY-MM-DD HH:mm:ssZ").toString()
   db.collection("users").doc(uid).collection("tasks").add({
     title: title,
     completed: false,
