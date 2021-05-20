@@ -6,6 +6,7 @@ export const slice = createSlice({
     uid: null,
     signed: false,
     iconURL: null,
+    displayName: null,
   },
   reducers: {
     Login: (state, action) => {
@@ -13,11 +14,13 @@ export const slice = createSlice({
       state.uid = data.uid
       state.signed = true
       state.iconURL = data.iconUrl
+      state.displayName = data.displayName
     },
     Logout: state => {
       state.uid = null
       state.signed = false
       state.iconURL = null
+      state.displayName = null
     },
   },
 })

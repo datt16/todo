@@ -28,6 +28,7 @@ const Auth = props => {
           Login({
             uid: user.uid,
             iconUrl: user.photoURL,
+            displayName: user.displayName,
           })
         )
       }
