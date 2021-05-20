@@ -5,6 +5,11 @@ import PropTypes from "prop-types"
 
 import { Login, Logout } from "../features/user/userSlice"
 
+const login = () => {
+  const provider = new firebase.auth.GoogleAuthProvider()
+  firebase.auth().signInWithRedirect(provider)
+}
+
 const Auth = props => {
   const dispatch = useDispatch()
   const signed = useSelector(state => state.user.signed)
@@ -13,11 +18,6 @@ const Auth = props => {
   const logout = () => {
     dispatch(Logout())
     firebase.auth().signOut()
-  }
-
-  const login = () => {
-    const provider = new firebase.auth.GoogleAuthProvider()
-    firebase.auth().signInWithRedirect(provider)
   }
 
   useEffect(() => {
@@ -52,6 +52,6 @@ Auth.propTypes = {
   children: PropTypes.any,
 }
 
-export { Login, Logout }
+export { login }
 
 export default Auth

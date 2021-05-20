@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import firebase from "../../Firebase"
 
 export const slice = createSlice({
   name: "user",
@@ -21,6 +22,7 @@ export const slice = createSlice({
       state.signed = false
       state.iconURL = null
       state.displayName = null
+      firebase.auth().signOut()
     },
   },
 })

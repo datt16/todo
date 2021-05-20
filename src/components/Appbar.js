@@ -11,8 +11,9 @@ import {
   MenuItem,
 } from "@material-ui/core"
 import MenuIcon from "@material-ui/icons/Menu"
-import { useSelector } from "react-redux"
-import { selectUser } from "../features/user/userSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { Logout, selectUser } from "../features/user/userSlice"
+import { login } from "./Auth"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export const CustomAppBar = () => {
+  const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = useState(null)
   const handleMenu = event => {
     setAnchorEl(event.currentTarget)
@@ -79,12 +81,25 @@ export const CustomAppBar = () => {
               open={open}
               onClose={e => handleClose(e)}
             >
-              <MenuItem onClick={e => handleClose(e)}>Profile</MenuItem>
-              <MenuItem onClick={e => handleClose(e)}>My account</MenuItem>
+              <MenuItem
+                onClick={e => {
+                  handleClose(e)
+                  dispatch(Logout())
+                }}
+              >
+                ログアウト
+              </MenuItem>
             </Menu>
           </div>
         ) : (
-          <Button color="inherit">ログイン</Button>
+          <Button
+            color="inherit"
+            onClick={() => {
+              login()
+            }}
+          >
+            ログイン
+          </Button>
         )}
       </Toolbar>
     </AppBar>
