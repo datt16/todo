@@ -9,10 +9,6 @@ export const slice = createSlice({
     error: null,
   },
   reducers: {
-    // firestoreにデータを追加するだけ
-    // add: (stete, action) => {
-    //   // const prop = action.payload
-    // },
     toggleComplete: (state, action) => {
       const targetID = action.payload
       const item = state.tasks.find(item => item.id === targetID)
@@ -34,25 +30,35 @@ export const slice = createSlice({
       state.error = null
       state.tasks = action.payload
     },
+    actionStart: state => {
+      state.loading = true
+      state.error = null
+    },
+    actionSuccess: state => {
+      state.loading = false
+      state.error = null
+    },
   },
 })
 
+/* sub-actions */
+
 const updateTask = async action => {
   const data = action
-  const targetID = data.targetID
+  const target = data.targetID
   const changedTask = data.task
   const uid = data.UID
-  const ref = db.collection("users").doc(uid).collection("tasks").doc(targetID)
+  const ref = db.collection("users").doc(uid).collection("tasks").doc(target)
   await ref.update(changedTask)
 }
 
-export const RemoveTask = async target => {
-  const targetID = target
-  const ref = db.collection("tasks").doc(targetID)
+export const RemoveTask = async (Target, UID) => {
+  const target = Target,
+    uid = UID
+  const ref = db.collection("users").doc(uid).collection("tasks").doc(target)
   await ref.delete()
 }
 
-// uid対応済み
 const getTasks = async uid => {
   const colRef = db
     .collection("users")
@@ -72,6 +78,9 @@ const getTasks = async uid => {
   })
   return docs
 }
+
+
+/* --- actions ---*/
 
 export const fetchItems = () => async (dispatch, getState) => {
   const uid = getState().user.uid
@@ -108,17 +117,17 @@ export const toggleTaskCompleted = target => async (dispatch, getState) => {
   }
 }
 
-export const RemoveTaskItem = target => async dispatch => {
+export const RemoveTaskItem = target => async (dispatch, getState) => {
+  const uid = getState().user.uid
   try {
-    dispatch(fetchStart())
-    await RemoveTask(target)
-    dispatch(fetchSuccess(await getTasks()))
+    dispatch(actionStart())
+    dispatch(actionSuccess(await RemoveTask(target, uid)))
+    dispatch(fetchItems())
   } catch (error) {
     dispatch(fetchFailure(error.stack))
   }
 }
 
-// uid対応
 export const CreateNewTask = title => async (dispatch, getState) => {
   const uid = getState().user.uid
   const createdDate = Date.now().toString()
@@ -138,6 +147,8 @@ export const {
   fetchSuccess,
   fetchFailure,
   updateTaskSuccess,
+  actionSuccess,
+  actionStart,
 } = slice.actions
 
 export const selectTask = ({ tasker }) => tasker
