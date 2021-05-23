@@ -1,22 +1,20 @@
 import React from "react"
-import { Box } from "@material-ui/core"
-import styles from "./App.module.css"
+import { Container } from "@material-ui/core"
 import { Tasks } from "./features/task/Tasks"
 import { InputForm } from "./components/addTaskForm"
-import Auth from "./Auth"
+import Auth from "./components/Auth"
+import { CustomAppBar } from "./components/Appbar"
 
 const App = () => {
   return (
     <div>
+      <CustomAppBar />
       <Auth>
-        <div className="App">
-          <header className={styles.appHeader}>
-            <p>Todo</p>
-          </header>
-          <Box display="container" p={1}>
+        <div className={"App"}>
+          <Container maxWidth="sm">
             <InputForm />
             <Tasks />
-          </Box>
+          </Container>
         </div>
       </Auth>
     </div>

@@ -1,14 +1,10 @@
 import React, { useEffect } from "react"
-import { Checkbox, Box } from "@material-ui/core"
+import { Box } from "@material-ui/core"
 import { useSelector, useDispatch } from "react-redux"
-import {
-  toggleTaskCompleted,
-  fetchItems,
-  selectTask,
-  RemoveTaskItem,
-} from "./taskSlice"
+import { fetchItems, selectTask } from "./taskSlice"
 
 import styles from "../../App.module.css"
+import { TaskItem } from "../../components/TaskItem/taskItem"
 
 export const Tasks = () => {
   const dispatch = useDispatch()
@@ -31,24 +27,7 @@ export const Tasks = () => {
         <h2>タスクリスト</h2>
         <ul className={styles.taskList}>
           {tasks.map(task => (
-            <li key={task.id}>
-              <Checkbox
-                onChange={() => dispatch(toggleTaskCompleted(task.id))}
-                checked={task.completed}
-              ></Checkbox>
-              {task.completed ? (
-                <span className={styles.completed}>{task.title}</span>
-              ) : (
-                <span>{task.title}</span>
-              )}
-              <button
-                onClick={() => {
-                  dispatch(RemoveTaskItem(task.id))
-                }}
-              >
-                Delete
-              </button>
-            </li>
+            <TaskItem data={task} key={task.id} />
           ))}
         </ul>
       </Box>
