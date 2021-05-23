@@ -1,23 +1,21 @@
-import React from "react"
-import { useDispatch } from "react-redux"
-import {
-  toggleTaskCompleted,
-  RemoveTaskItem,
-} from "../../features/task/taskSlice"
-import PropTypes from "prop-types"
-
 import {
   Box,
-  Checkbox,
-  Typography,
   Card,
-  makeStyles,
   CardContent,
+  Checkbox,
+  makeStyles,
+  Typography,
 } from "@material-ui/core"
 import IconButton from "@material-ui/core/IconButton"
 import DeleteIcon from "@material-ui/icons/Delete"
-
+import PropTypes from "prop-types"
+import React, { useState } from "react"
+import { useDispatch } from "react-redux"
 import styles from "../../App.module.css"
+import {
+  RemoveTaskItem,
+  toggleTaskCompleted,
+} from "../../features/task/taskSlice"
 
 const useStyles = makeStyles({
   root: {
@@ -29,12 +27,17 @@ export const TaskItem = props => {
   const dispatch = useDispatch()
   const data = props.data
   const classes = useStyles()
+  const [, setEM] = useState(false)
+
+  const intoEditMode = () => {
+    setEM(true)
+  }
 
   return (
     <Box mb={2}>
       <li>
         <Card className={classes.root} elevation={1}>
-          <CardContent>
+          <CardContent onBlur={() => setEM(false)}>
             <Box display="flex" alignItems="center">
               <Box mr={2}>
                 <Checkbox
@@ -43,7 +46,7 @@ export const TaskItem = props => {
                 />
               </Box>
 
-              <Box flexGrow={1}>
+              <Box flexGrow={1} onClick={() => intoEditMode()}>
                 {data.completed ? (
                   <Typography
                     variant="h6"
@@ -56,7 +59,9 @@ export const TaskItem = props => {
                     {data.title}
                   </Typography>
                 )}
-                <Typography color="textSecondary">{data.created}</Typography>
+                <Typography color="textSecondary">
+                  {"// ここに期限を表示"}
+                </Typography>
               </Box>
 
               <Box>
