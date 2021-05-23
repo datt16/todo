@@ -1,14 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit"
-import firebase from "../../Firebase"
+import firebase from "../../plugins/Firebase"
+
+export type UIDtype = string
+
+interface UserState {
+  uid: UIDtype
+  signed: boolean
+  iconURL: string
+  displayName: string
+}
+
+const initialState: UserState = {
+  uid: "",
+  signed: false,
+  iconURL: "",
+  displayName: "",
+}
 
 export const slice = createSlice({
   name: "user",
-  initialState: {
-    uid: null,
-    signed: false,
-    iconURL: null,
-    displayName: null,
-  },
+  initialState,
   reducers: {
     Login: (state, action) => {
       const data = action.payload
@@ -18,17 +29,15 @@ export const slice = createSlice({
       state.displayName = data.displayName
     },
     Logout: state => {
-      state.uid = null
+      state.uid = ""
       state.signed = false
-      state.iconURL = null
-      state.displayName = null
+      state.iconURL = ""
+      state.displayName = ""
       firebase.auth().signOut()
     },
   },
 })
 
 export const { Login, Logout } = slice.actions
-
-export const selectUser = ({ user }) => user
 
 export default slice.reducer

@@ -5,7 +5,7 @@ import { InputForm } from "./components/addTaskForm"
 import Auth from "./components/Auth"
 import { CustomAppBar } from "./components/Appbar"
 
-const App = () => {
+const App:React.FC = () => {
   return (
     <div>
       <CustomAppBar />

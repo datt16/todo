@@ -2,12 +2,12 @@ import React, { useState } from "react"
 import { useDispatch } from "react-redux"
 import { CreateNewTask } from "../features/task/taskSlice"
 
-export const InputForm = () => {
+export const InputForm: React.FC = () => {
   const [newTaskTitle, setTaskTitle] = useState("")
   const dispatch = useDispatch()
 
-  const submit = e => {
-    const target = e.target
+  const submit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const target = e.currentTarget
     dispatch(CreateNewTask(newTaskTitle))
     setTaskTitle("")
     target.value = ""
@@ -21,7 +21,7 @@ export const InputForm = () => {
           placeholder="ここにタスク名を入力"
           name="newTaskTitle"
           value={newTaskTitle}
-          onChange={event => setTaskTitle(event.target.value)}
+          onChange={e => setTaskTitle(e.target.value)}
         ></input>
         <button type="button" onClick={e => submit(e)}>
           追加
