@@ -9,7 +9,8 @@ type AuthPropsType = {
   children: ReactNode
 }
 
-const login = () => {
+type Login = () => void
+export const login: Login = () => {
   const provider = new firebase.auth.GoogleAuthProvider()
   firebase.auth().signInWithRedirect(provider)
 }
@@ -17,7 +18,7 @@ const login = () => {
 const Auth: React.FC<AuthPropsType> = (props: AuthPropsType) => {
   const dispatch = useDispatch()
   const signed = useSelector((state: AppState) => state.user.signed)
-  const [, setUser]: [undefined, any] = useState()
+  const [, setUser] = useState<firebase.User | null>()
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
@@ -40,7 +41,5 @@ const Auth: React.FC<AuthPropsType> = (props: AuthPropsType) => {
     </div>
   )
 }
-
-export { login }
 
 export default Auth

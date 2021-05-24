@@ -1,7 +1,7 @@
 import { TextField, Button, Box } from "@material-ui/core"
 import React, { useState } from "react"
 import { useDispatch } from "react-redux"
-import { CreateNewTask } from "../features/task/taskSlice"
+import { createNewTask } from "../features/task/taskSlice"
 
 export const InputForm: React.FC = () => {
   const [newTaskTitle, setTaskTitle] = useState("")
@@ -9,7 +9,7 @@ export const InputForm: React.FC = () => {
 
   const submit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const target = e.currentTarget
-    dispatch(CreateNewTask(newTaskTitle))
+    dispatch(createNewTask(newTaskTitle))
     setTaskTitle("")
     target.value = ""
   }

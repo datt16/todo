@@ -13,7 +13,7 @@ import React, { useState } from "react"
 import { useDispatch } from "react-redux"
 import styles from "../../App.module.css"
 import {
-  RemoveTaskItem,
+  removeTaskItem,
   toggleTaskCompleted,
 } from "../../features/task/taskSlice"
 
@@ -70,7 +70,7 @@ export const TaskItem: React.FC<propType> = (props: propType) => {
                   <IconButton
                     aria-label="delete"
                     onClick={() => {
-                      dispatch(RemoveTaskItem(data.id))
+                      dispatch(removeTaskItem(data.id))
                     }}
                   >
                     <DeleteIcon />

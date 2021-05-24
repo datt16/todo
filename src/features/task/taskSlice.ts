@@ -116,23 +116,28 @@ const getTasks = async (uid: UIDtype) => {
 
 /* --- actions ---*/
 
-export const fetchItems =
-  () => async (dispatch: AppDispatch, getState: AppGetState) => {
-    const uid = getState().user.uid
-    try {
-      dispatch(fetchStart())
-      if (uid) {
-        dispatch(fetchSuccess(await getTasks(uid)))
-      } else {
-        dispatch(fetchFailure("ログインされていません"))
-      }
-    } catch (error) {
-      dispatch(fetchFailure(error.stack))
-    }
-  }
+type FetchItems = () => (dispatch: AppDispatch, getState: AppGetState) => void
 
-export const toggleTaskCompleted =
-  (target: UIDtype) => async (dispatch: AppDispatch, getState: AppGetState) => {
+export const fetchItems: FetchItems = () => async (dispatch, getState) => {
+  const uid = getState().user.uid
+  try {
+    dispatch(fetchStart())
+    if (uid) {
+      dispatch(fetchSuccess(await getTasks(uid)))
+    } else {
+      dispatch(fetchFailure("ログインされていません"))
+    }
+  } catch (error) {
+    dispatch(fetchFailure(error.stack))
+  }
+}
+
+type ToggleTaskCompleted = (
+  target: UIDtype
+) => (dispatch: AppDispatch, getState: AppGetState) => void
+
+export const toggleTaskCompleted: ToggleTaskCompleted =
+  target => async (dispatch, getState) => {
     dispatch(toggleComplete(target))
     const uid: UIDtype = getState().user.uid
     const state = getState().tasker
@@ -162,8 +167,12 @@ export const toggleTaskCompleted =
     }
   }
 
-export const RemoveTaskItem =
-  (target: string) => async (dispatch: AppDispatch, getState: AppGetState) => {
+type RemoveTaskItem = (
+  target: TaskIDtype
+) => (dispatch: AppDispatch, getState: AppGetState) => void
+
+export const removeTaskItem: RemoveTaskItem =
+  target => async (dispatch, getState) => {
     const uid: UIDtype = getState().user.uid
     try {
       dispatch(actionStart())
@@ -175,9 +184,12 @@ export const RemoveTaskItem =
     }
   }
 
-export const CreateNewTask =
-  (title: TaskTitleType) =>
-  async (dispatch: AppDispatch, getState: AppGetState) => {
+type CreateNewTask = (
+  title: TaskTitleType
+) => (dispatch: AppDispatch, getState: AppGetState) => void
+
+export const createNewTask: CreateNewTask =
+  title => async (dispatch, getState) => {
     const uid = getState().user.uid
     const createdDate = moment().format("YYYY-MM-DD HH:mm:ssZ").toString()
     db.collection("users").doc(uid).collection("tasks").add({
