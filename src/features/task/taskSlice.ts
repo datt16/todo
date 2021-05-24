@@ -142,13 +142,20 @@ export const toggleTaskCompleted: ToggleTaskCompleted =
     const uid: UIDtype = getState().user.uid
     const state = getState().tasker
 
-    const targetItem: any = state.tasks.find(item => item.id === target)
+    const targetItem = state.tasks.find(item => item.id === target)
 
-    const task: RemoteTaskItemType = {
-      title: targetItem.title,
-      completed: targetItem.completed,
-      created: targetItem.created,
-    }
+    const task =
+      targetItem == undefined
+        ? {
+            title: "",
+            completed: false,
+            created: "",
+          }
+        : {
+            title: targetItem.title,
+            completed: targetItem.completed,
+            created: targetItem.created,
+          }
 
     const data: {
       UID: UIDtype
