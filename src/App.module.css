@@ -9,16 +9,13 @@
 }
 
 .taskItem {
-  margin-right: 1.5rem;
+  padding: 0;
   display: inline;
-}
-
-.taskTitle {
-  font-size: 20px;
 }
 
 .taskList {
   list-style: none;
+  padding: 0;
 }
 
 .completed {
