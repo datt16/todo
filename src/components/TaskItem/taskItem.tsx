@@ -13,9 +13,11 @@ import React, { useState } from "react"
 import { useDispatch } from "react-redux"
 import styles from "../../App.module.css"
 import {
-  RemoveTaskItem,
+  removeTaskItem,
   toggleTaskCompleted,
 } from "../../features/task/taskSlice"
+
+import { LocalTaskItemType } from "../../features/task/taskSlice"
 
 const useStyles = makeStyles({
   root: {
@@ -23,7 +25,11 @@ const useStyles = makeStyles({
   },
 })
 
-export const TaskItem = props => {
+type propType = {
+  data: LocalTaskItemType
+}
+
+export const TaskItem: React.FC<propType> = (props: propType) => {
   const dispatch = useDispatch()
   const data = props.data
   const classes = useStyles()
@@ -48,16 +54,11 @@ export const TaskItem = props => {
 
               <Box flexGrow={1} onClick={() => intoEditMode()}>
                 {data.completed ? (
-                  <Typography
-                    variant="h6"
-                    className={(styles.completed, classes.taskItem)}
-                  >
+                  <Typography variant="h6" className={styles.completed}>
                     {data.title}
                   </Typography>
                 ) : (
-                  <Typography variant="h6" className={classes.taskItem}>
-                    {data.title}
-                  </Typography>
+                  <Typography variant="h6">{data.title}</Typography>
                 )}
                 <Typography color="textSecondary">
                   {"// ここに期限を表示"}
@@ -69,7 +70,7 @@ export const TaskItem = props => {
                   <IconButton
                     aria-label="delete"
                     onClick={() => {
-                      dispatch(RemoveTaskItem(data.id))
+                      dispatch(removeTaskItem(data.id))
                     }}
                   >
                     <DeleteIcon />

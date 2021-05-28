@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, ReactNode } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import firebase from "../Firebase"
-import PropTypes from "prop-types"
+import firebase from "../plugins/Firebase"
 
 import { Login } from "../features/user/userSlice"
+import { AppState } from "../app/store"
 
-const login = () => {
+type AuthPropsType = {
+  children: ReactNode
+}
+
+type Login = () => void
+export const login: Login = () => {
   const provider = new firebase.auth.GoogleAuthProvider()
   firebase.auth().signInWithRedirect(provider)
 }
 
-const Auth = props => {
+const Auth: React.FC<AuthPropsType> = (props: AuthPropsType) => {
   const dispatch = useDispatch()
-  const signed = useSelector(state => state.user.signed)
-  const [, setUser] = useState()
+  const signed = useSelector((state: AppState) => state.user.signed)
+  const [, setUser] = useState<firebase.User | null>()
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
@@ -36,11 +41,5 @@ const Auth = props => {
     </div>
   )
 }
-
-Auth.propTypes = {
-  children: PropTypes.any,
-}
-
-export { login }
 
 export default Auth

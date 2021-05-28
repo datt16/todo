@@ -1,3 +1,14 @@
+# タスク管理アプリ
+
+デプロイ先 : https://datt-todo-0415.web.app/
+
+まだ開発段階のため、タスク入力情報は開発者によって読み取り・削除・変更が行われる可能性があります。
+
+アカウント情報(Google アカウント)は**名前・アイコン・識別 ID の取得**に使用します。
+  
+---
+## <-- 以下初期生成メッセージ -->
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

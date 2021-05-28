@@ -1,14 +1,18 @@
 import React, { useEffect } from "react"
 import { Box } from "@material-ui/core"
 import { useSelector, useDispatch } from "react-redux"
-import { fetchItems, selectTask } from "./taskSlice"
+import { fetchItems } from "./taskSlice"
 
 import styles from "../../App.module.css"
 import { TaskItem } from "../../components/TaskItem/taskItem"
 
-export const Tasks = () => {
+import { AppState } from "../../app/store"
+
+export const Tasks: React.FC = () => {
   const dispatch = useDispatch()
-  const { tasks, loading, error } = useSelector(selectTask)
+  const { tasks, loading, error } = useSelector(
+    (state: AppState) => state.tasker
+  )
 
   useEffect(() => {
     dispatch(fetchItems())

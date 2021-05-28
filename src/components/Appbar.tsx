@@ -12,8 +12,9 @@ import {
 } from "@material-ui/core"
 import MenuIcon from "@material-ui/icons/Menu"
 import { useDispatch, useSelector } from "react-redux"
-import { Logout, selectUser } from "../features/user/userSlice"
+import { Logout } from "../features/user/userSlice"
 import { login } from "./Auth"
+import { AppState } from "../app/store"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,10 +28,10 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export const CustomAppBar = () => {
+export const CustomAppBar:React.FC = () => {
   const dispatch = useDispatch()
-  const [anchorEl, setAnchorEl] = useState(null)
-  const handleMenu = event => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
 
@@ -39,7 +40,10 @@ export const CustomAppBar = () => {
   }
   const open = Boolean(anchorEl)
 
-  const { uid, iconURL, displayName } = useSelector(selectUser)
+  const { uid, iconURL, displayName } = useSelector(
+    (state: AppState) => state.user
+  )
+
   const classes = useStyles()
   return (
     <AppBar position="static">
@@ -55,7 +59,7 @@ export const CustomAppBar = () => {
         <Typography variant="h6" className={classes.title}>
           タスク管理アプリ
         </Typography>
-        {uid ? (
+        {uid !== "" ? (
           <div>
             <IconButton
               aria-label="account of current user"
@@ -79,11 +83,11 @@ export const CustomAppBar = () => {
                 horizontal: "right",
               }}
               open={open}
-              onClose={e => handleClose(e)}
+              onClose={handleClose}
             >
               <MenuItem
-                onClick={e => {
-                  handleClose(e)
+                onClick={() => {
+                  handleClose
                   dispatch(Logout())
                 }}
               >
