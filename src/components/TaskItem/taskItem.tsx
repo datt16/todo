@@ -5,6 +5,7 @@ import {
   Checkbox,
   makeStyles,
   Typography,
+  Divider,
 } from "@material-ui/core"
 import IconButton from "@material-ui/core/IconButton"
 import DeleteIcon from "@material-ui/icons/Delete"
@@ -16,7 +17,7 @@ import {
   removeTaskItem,
   toggleTaskCompleted,
 } from "../../features/task/taskSlice"
-
+import { TaskItemBtn } from "./taskItemButton"
 import { LocalTaskItemType } from "../../features/task/taskSlice"
 
 const useStyles = makeStyles({
@@ -44,7 +45,7 @@ export const TaskItem: React.FC<propType> = (props: propType) => {
       <li>
         <Card className={classes.root} elevation={1}>
           <CardContent onBlur={() => setEM(false)}>
-            <Box display="flex" alignItems="center">
+            <Box display="flex" alignItems="center" mb={1}>
               <Box mr={2}>
                 <Checkbox
                   onChange={() => dispatch(toggleTaskCompleted(data.id))}
@@ -76,6 +77,31 @@ export const TaskItem: React.FC<propType> = (props: propType) => {
                     <DeleteIcon />
                   </IconButton>
                 </div>
+              </Box>
+            </Box>
+
+            <Divider />
+
+            <Box display="flex" mt={1}>
+              <Box ml={2}>
+                <TaskItemBtn
+                  label="Remove"
+                  onClick={() => {
+                    dispatch(removeTaskItem(data.id))
+                  }}
+                >
+                  <DeleteIcon />
+                </TaskItemBtn>
+              </Box>
+              <Box ml={3}>
+                <TaskItemBtn
+                  label="Remove"
+                  onClick={() => {
+                    dispatch(removeTaskItem(data.id))
+                  }}
+                >
+                  <DeleteIcon />
+                </TaskItemBtn>
               </Box>
             </Box>
           </CardContent>
