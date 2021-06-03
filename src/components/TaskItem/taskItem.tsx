@@ -8,7 +8,6 @@ import {
   Divider,
   TextField,
 } from "@material-ui/core"
-import IconButton from "@material-ui/core/IconButton"
 import DeleteIcon from "@material-ui/icons/Delete"
 import CreateIcon from "@material-ui/icons/Create"
 import PropTypes from "prop-types"
@@ -90,19 +89,6 @@ export const TaskItem: React.FC<propType> = (props: propType) => {
                 <Typography color="textSecondary">
                   {"// ここに期限を表示"}
                 </Typography>
-              </Box>
-
-              <Box>
-                <div>
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => {
-                      dispatch(removeTaskItem(data.id))
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </div>
               </Box>
             </Box>
 
