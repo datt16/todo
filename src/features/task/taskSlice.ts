@@ -64,7 +64,7 @@ export const slice = createSlice({
   },
 })
 
-/* sub-actions */
+/* sub-actions : action内で呼び出される関数(Ex: firebaseへのpush) */
 
 interface updatePropsType {
   targetID: string
@@ -114,9 +114,25 @@ const getTasks = async (uid: UIDtype) => {
   return docs
 }
 
-/* --- actions ---*/
+/* --- actions : 外部からstateに変更を加えるときに呼び出される ---*/
 
 type FetchItems = () => (dispatch: AppDispatch, getState: AppGetState) => void
+
+type ToggleTaskCompleted = (
+  target: UIDtype
+) => (dispatch: AppDispatch, getState: AppGetState) => void
+
+type RemoveTaskItem = (
+  target: TaskIDtype
+) => (dispatch: AppDispatch, getState: AppGetState) => void
+
+type UpdateTask = (
+  updatedTaskItem: LocalTaskItemType
+) => (dispatch: AppDispatch, getState: AppGetState) => void
+
+type CreateNewTask = (
+  title: TaskTitleType
+) => (dispatch: AppDispatch, getState: AppGetState) => void
 
 export const fetchItems: FetchItems = () => async (dispatch, getState) => {
   const uid = getState().user.uid
@@ -132,9 +148,29 @@ export const fetchItems: FetchItems = () => async (dispatch, getState) => {
   }
 }
 
-type ToggleTaskCompleted = (
-  target: UIDtype
-) => (dispatch: AppDispatch, getState: AppGetState) => void
+export const updateTaskItem: UpdateTask =
+  (After: LocalTaskItemType) => async (dispatch, getState) => {
+    const uid: UIDtype = getState().user.uid
+    const data: {
+      UID: UIDtype
+      targetID: TaskIDtype
+      task: RemoteTaskItemType
+    } = {
+      UID: uid,
+      targetID: After.id,
+      task: {
+        title: After.title,
+        completed: After.completed,
+        created: After.created,
+      },
+    }
+    try {
+      await updateTask(data)
+      dispatch(fetchItems())
+    } catch (error) {
+      dispatch(fetchFailure(error.stack))
+    }
+  }
 
 export const toggleTaskCompleted: ToggleTaskCompleted =
   target => async (dispatch, getState) => {
@@ -174,10 +210,6 @@ export const toggleTaskCompleted: ToggleTaskCompleted =
     }
   }
 
-type RemoveTaskItem = (
-  target: TaskIDtype
-) => (dispatch: AppDispatch, getState: AppGetState) => void
-
 export const removeTaskItem: RemoveTaskItem =
   target => async (dispatch, getState) => {
     const uid: UIDtype = getState().user.uid
@@ -190,10 +222,6 @@ export const removeTaskItem: RemoveTaskItem =
       dispatch(fetchFailure(error.stack))
     }
   }
-
-type CreateNewTask = (
-  title: TaskTitleType
-) => (dispatch: AppDispatch, getState: AppGetState) => void
 
 export const createNewTask: CreateNewTask =
   title => async (dispatch, getState) => {
