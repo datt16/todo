@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core"
 import DeleteIcon from "@material-ui/icons/Delete"
 import CreateIcon from "@material-ui/icons/Create"
+import LimitIcon from "@material-ui/icons/Schedule"
 import PropTypes from "prop-types"
 import React, { useState } from "react"
 import { useDispatch } from "react-redux"
@@ -20,6 +21,7 @@ import {
   updateTaskItem,
 } from "../../features/task/taskSlice"
 import { TaskItemBtn } from "./taskItemButton"
+import { InlineDatePicker } from "./inlineDatePicker"
 import { LocalTaskItemType } from "../../features/task/taskSlice"
 
 const useStyles = makeStyles({
@@ -32,20 +34,26 @@ type propType = {
   data: LocalTaskItemType
 }
 
-export const TaskItem: React.FC<propType> = (props: propType) => {
+export const TaskItem: React.FC<propType> = props => {
   const dispatch = useDispatch()
   const data = props.data
   const classes = useStyles()
-  const [formOpen, setFormOpen] = useState(false)
+  const [titleFormOpen, setTitleFormOpen] = useState(false)
+  const [dateFormOpen, setDateFormOpen] = useState(false)
   const [newTaskTitle, setTaskTitle] = useState("")
+  const [newTaskLimit, setTaskLimit] = useState<Date | null>(null)
 
-  const intoEditMode = () => {
+  const intoTitleEditMode = () => {
     let title = ""
     if (data.title) {
       title = data.title
     }
     setTaskTitle(title)
-    setFormOpen(true)
+    setTitleFormOpen(true)
+  }
+
+  const intoDateEditMode = () => {
+    setDateFormOpen(true)
   }
 
   const submit = () => {
@@ -56,7 +64,7 @@ export const TaskItem: React.FC<propType> = (props: propType) => {
       created: data.created,
     }
     dispatch(updateTaskItem(After))
-    setFormOpen(false)
+    setTitleFormOpen(false)
     setTaskTitle("")
   }
 
@@ -73,8 +81,8 @@ export const TaskItem: React.FC<propType> = (props: propType) => {
                 />
               </Box>
 
-              <Box flexGrow={1} onBlur={() => setFormOpen(false)}>
-                {formOpen ? (
+              <Box flexGrow={1} onBlur={() => setTitleFormOpen(false)}>
+                {titleFormOpen ? (
                   <TextField
                     placeholder="ここにタスク名を入力"
                     name="newTaskTitle"
@@ -94,33 +102,63 @@ export const TaskItem: React.FC<propType> = (props: propType) => {
                 <Typography color="textSecondary">
                   {"// ここに期限を表示"}
                 </Typography>
+
+                <Typography color="textSecondary">{data.created}</Typography>
               </Box>
             </Box>
 
             <Divider />
 
-            <Box display="flex" mt={1}>
-              <Box ml={2}>
-                <TaskItemBtn
-                  label="Remove"
-                  onClick={() => {
-                    dispatch(removeTaskItem(data.id))
-                  }}
-                >
-                  <DeleteIcon />
-                </TaskItemBtn>
+            {dateFormOpen ? (
+              <Box display="flex" mt={1}>
+                <Box flexGrow={1}>
+                  <InlineDatePicker
+                    backCB={() => setDateFormOpen(false)}
+                    forwardCB={v => {
+                      setTaskLimit(() => {
+                        console.log(v)
+                        // ここでdispatch
+                        return v
+                      })
+                      setDateFormOpen(false)
+                    }}
+                  />
+                </Box>
               </Box>
-              <Box ml={3}>
-                <TaskItemBtn
-                  label="Rename"
-                  onClick={() => {
-                    intoEditMode()
-                  }}
-                >
-                  <CreateIcon />
-                </TaskItemBtn>
+            ) : (
+              <Box display="flex" mt={1}>
+                <Box ml={1}>
+                  <TaskItemBtn
+                    label="削除"
+                    onClick={() => {
+                      dispatch(removeTaskItem(data.id))
+                    }}
+                  >
+                    <DeleteIcon />
+                  </TaskItemBtn>
+                </Box>
+                <Box ml={3}>
+                  <TaskItemBtn
+                    label="名前変更"
+                    onClick={() => {
+                      intoTitleEditMode()
+                    }}
+                  >
+                    <CreateIcon />
+                  </TaskItemBtn>
+                </Box>
+                <Box ml={3}>
+                  <TaskItemBtn
+                    label="期限"
+                    onClick={() => {
+                      intoDateEditMode()
+                    }}
+                  >
+                    <LimitIcon />
+                  </TaskItemBtn>
+                </Box>
               </Box>
-            </Box>
+            )}
           </CardContent>
         </Card>
       </li>
