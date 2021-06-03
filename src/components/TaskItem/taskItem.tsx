@@ -40,6 +40,11 @@ export const TaskItem: React.FC<propType> = (props: propType) => {
   const [newTaskTitle, setTaskTitle] = useState("")
 
   const intoEditMode = () => {
+    let title = ""
+    if (data.title) {
+      title = data.title
+    }
+    setTaskTitle(title)
     setFormOpen(true)
   }
 
