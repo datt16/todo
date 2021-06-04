@@ -11,7 +11,7 @@ export type LocalTaskItemType = {
   title: TaskTitleType
   completed: boolean
   created?: Date
-  limit?: Date
+  limit: Date | null
   id: TaskIDtype
 }
 
@@ -19,14 +19,14 @@ type RemoteTaskItemType = {
   title: TaskTitleType
   completed: boolean
   created?: Date
-  limit?: Date
+  limit: Date | null
 }
 
 interface TaskState {
   tasks: Array<LocalTaskItemType>
   loading: boolean
   error: string | null
-  limit?: Date
+  limit?: Date | null
 }
 
 const initialState: TaskState = {
@@ -82,6 +82,12 @@ interface updatePropsType {
 
 const updateTask = async (prop: updatePropsType) => {
   const data = prop
+
+  console.log(data.task)
+
+  Object.fromEntries(
+    Object.entries(data.task).filter(([, v]) => v !== undefined)
+  )
   const target = data.targetID
   const changedTask = data.task
   const uid = data.UID
@@ -115,8 +121,8 @@ const getTasks = async (uid: UIDtype) => {
     docs.push({
       title: data.title,
       completed: data.completed,
-      created: data.created,
-      limit: data.limit,
+      created: data.created.toDate(),
+      limit: data.limit ? data.limit.toDate() : null,
       id: doc.id,
     })
   })
@@ -196,11 +202,13 @@ export const toggleTaskCompleted: ToggleTaskCompleted =
             title: "",
             completed: false,
             created: undefined,
+            limit: null,
           }
         : {
             title: targetItem.title,
             completed: targetItem.completed,
             created: targetItem.created,
+            limit: targetItem.limit,
           }
 
     const data: {

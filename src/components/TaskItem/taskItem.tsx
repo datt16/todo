@@ -24,6 +24,8 @@ import { TaskItemBtn } from "./taskItemButton"
 import { InlineDatePicker } from "./inlineDatePicker"
 import { LocalTaskItemType } from "../../features/task/taskSlice"
 
+import useStateWithCallback from "use-state-with-callback"
+
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
@@ -41,7 +43,14 @@ export const TaskItem: React.FC<propType> = props => {
   const [titleFormOpen, setTitleFormOpen] = useState(false)
   const [dateFormOpen, setDateFormOpen] = useState(false)
   const [newTaskTitle, setTaskTitle] = useState("")
-  // const [newTaskLimit, setTaskLimit] = useState<Date | null>(null)
+  const [newTaskLimit, setTaskLimit] = useStateWithCallback<Date | null>(
+    null,
+    () => {
+      if (newTaskLimit != null) {
+        submitDateForm()
+      }
+    }
+  )
 
   const intoTitleEditMode = () => {
     let title = ""
@@ -56,16 +65,31 @@ export const TaskItem: React.FC<propType> = props => {
     setDateFormOpen(true)
   }
 
+  const submitDateForm = () => {
+    const After: LocalTaskItemType = {
+      title: data.title,
+      completed: data.completed,
+      id: data.id,
+      created: data.created,
+      limit: newTaskLimit,
+    }
+    dispatch(updateTaskItem(After))
+    setTitleFormOpen(false)
+    setTaskLimit(null)
+  }
+
   const submit = () => {
     const After: LocalTaskItemType = {
       title: newTaskTitle,
       completed: data.completed,
       id: data.id,
       created: data.created,
+      limit: newTaskLimit,
     }
     dispatch(updateTaskItem(After))
     setTitleFormOpen(false)
     setTaskTitle("")
+    setTaskLimit(null)
   }
 
   return (
@@ -99,11 +123,18 @@ export const TaskItem: React.FC<propType> = props => {
                   <Typography variant="h6">{data.title}</Typography>
                 )}
 
-                <Typography color="textSecondary">
-                  {"// ここに期限を表示"}
-                </Typography>
-
-                <Typography color="textSecondary">{data.created?.toString()}</Typography>
+                {data.limit ? (
+                  <Box display="flex" alignItems="center">
+                    <LimitIcon color="action" fontSize="small" />
+                    <Box ml={1}>
+                      <Typography color="textSecondary">
+                        {data.limit?.toLocaleString("ja-JP")}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ) : (
+                  <></>
+                )}
               </Box>
             </Box>
 
@@ -114,8 +145,8 @@ export const TaskItem: React.FC<propType> = props => {
                 <Box flexGrow={1}>
                   <InlineDatePicker
                     backCB={() => setDateFormOpen(false)}
-                    forwardCB={() => {
-                      setDateFormOpen(false)
+                    forwardCB={e => {
+                      setTaskLimit(e)
                     }}
                   />
                 </Box>
