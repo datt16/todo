@@ -148,6 +148,7 @@ export const TaskItem: React.FC<propType> = props => {
                     forwardCB={e => {
                       setTaskLimit(e)
                     }}
+                    value={data.limit}
                   />
                 </Box>
               </Box>

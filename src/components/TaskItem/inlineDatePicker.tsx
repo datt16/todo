@@ -14,14 +14,16 @@ import BackIcon from "@material-ui/icons/ArrowBack"
 interface PropType {
   backCB: () => void
   forwardCB: (value: Date | null) => void
+  value: Date | null
 }
 
 export const InlineDatePicker: React.FC<PropType> = ({
   backCB,
   forwardCB,
+  value = null,
 }: PropType) => {
   const [selectedDate, setSelectedDate] = React.useState<Date | null>(
-    new Date()
+    value == null ? new Date() : value
   )
 
   const handleDateChange = (date: Date | null) => {
