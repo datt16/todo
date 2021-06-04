@@ -16,9 +16,12 @@ interface PropType {
   forwardCB: (value: Date | null) => void
 }
 
-export const InlineDatePicker: React.FC<PropType> = (props: PropType) => {
+export const InlineDatePicker: React.FC<PropType> = ({
+  backCB,
+  forwardCB,
+}: PropType) => {
   const [selectedDate, setSelectedDate] = React.useState<Date | null>(
-    new Date("2014-08-18T21:11:54")
+    new Date()
   )
 
   const handleDateChange = (date: Date | null) => {
@@ -29,7 +32,7 @@ export const InlineDatePicker: React.FC<PropType> = (props: PropType) => {
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Box display="flex">
         <Box ml={1}>
-          <TaskItemBtn label="戻る" onClick={props.backCB}>
+          <TaskItemBtn label="戻る" onClick={backCB}>
             <BackIcon />
           </TaskItemBtn>
         </Box>
@@ -61,10 +64,7 @@ export const InlineDatePicker: React.FC<PropType> = (props: PropType) => {
           />
         </Box>
         <Box ml={1}>
-          <TaskItemBtn
-            label="保存"
-            onClick={() => props.forwardCB(selectedDate)}
-          >
+          <TaskItemBtn label="保存" onClick={() => forwardCB(selectedDate)}>
             <ForwardIcon />
           </TaskItemBtn>
         </Box>

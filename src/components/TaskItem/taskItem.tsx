@@ -41,7 +41,7 @@ export const TaskItem: React.FC<propType> = props => {
   const [titleFormOpen, setTitleFormOpen] = useState(false)
   const [dateFormOpen, setDateFormOpen] = useState(false)
   const [newTaskTitle, setTaskTitle] = useState("")
-  const [newTaskLimit, setTaskLimit] = useState<Date | null>(null)
+  // const [newTaskLimit, setTaskLimit] = useState<Date | null>(null)
 
   const intoTitleEditMode = () => {
     let title = ""
@@ -114,12 +114,7 @@ export const TaskItem: React.FC<propType> = props => {
                 <Box flexGrow={1}>
                   <InlineDatePicker
                     backCB={() => setDateFormOpen(false)}
-                    forwardCB={v => {
-                      setTaskLimit(() => {
-                        console.log(v)
-                        // ここでdispatch
-                        return v
-                      })
+                    forwardCB={() => {
                       setDateFormOpen(false)
                     }}
                   />
