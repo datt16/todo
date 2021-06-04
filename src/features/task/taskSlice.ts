@@ -111,7 +111,7 @@ const getTasks = async (uid: UIDtype) => {
     .collection("users")
     .doc(uid)
     .collection("tasks")
-    .orderBy("title")
+    .orderBy("created")
   const snapshots = await colRef.get()
 
   const docs: Array<LocalTaskItemType> = []
