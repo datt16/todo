@@ -10,23 +10,31 @@ type TaskTitleType = string | null
 export type LocalTaskItemType = {
   title: TaskTitleType
   completed: boolean
-  created: string
+  created?: Date
+  limit?: Date
   id: TaskIDtype
 }
 
 type RemoteTaskItemType = {
   title: TaskTitleType
   completed: boolean
-  created: string
+  created?: Date
+  limit?: Date
 }
 
 interface TaskState {
   tasks: Array<LocalTaskItemType>
   loading: boolean
   error: string | null
+  limit?: Date
 }
 
-const initialState: TaskState = { tasks: [], loading: false, error: null }
+const initialState: TaskState = {
+  tasks: [],
+  loading: false,
+  error: null,
+  limit: undefined,
+}
 
 export const slice = createSlice({
   name: "tasker",
@@ -108,6 +116,7 @@ const getTasks = async (uid: UIDtype) => {
       title: data.title,
       completed: data.completed,
       created: data.created,
+      limit: data.limit,
       id: doc.id,
     })
   })
@@ -162,6 +171,7 @@ export const updateTaskItem: UpdateTask =
         title: After.title,
         completed: After.completed,
         created: After.created,
+        limit: After.limit,
       },
     }
     try {
@@ -185,7 +195,7 @@ export const toggleTaskCompleted: ToggleTaskCompleted =
         ? {
             title: "",
             completed: false,
-            created: "",
+            created: undefined,
           }
         : {
             title: targetItem.title,
@@ -226,7 +236,7 @@ export const removeTaskItem: RemoveTaskItem =
 export const createNewTask: CreateNewTask =
   title => async (dispatch, getState) => {
     const uid = getState().user.uid
-    const createdDate = moment().format("YYYY-MM-DD HH:mm:ssZ").toString()
+    const createdDate = moment().toDate()
     db.collection("users").doc(uid).collection("tasks").add({
       title: title,
       completed: false,

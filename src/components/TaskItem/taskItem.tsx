@@ -103,7 +103,7 @@ export const TaskItem: React.FC<propType> = props => {
                   {"// ここに期限を表示"}
                 </Typography>
 
-                <Typography color="textSecondary">{data.created}</Typography>
+                <Typography color="textSecondary">{data.created?.toString()}</Typography>
               </Box>
             </Box>
 
