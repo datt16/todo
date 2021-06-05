@@ -7,10 +7,12 @@ import {
   Typography,
   Divider,
   TextField,
+  IconButton,
 } from "@material-ui/core"
 import DeleteIcon from "@material-ui/icons/Delete"
 import CreateIcon from "@material-ui/icons/Create"
 import LimitIcon from "@material-ui/icons/Schedule"
+import AllowIcon from "@material-ui/icons/ArrowDropDown"
 import PropTypes from "prop-types"
 import React, { useState } from "react"
 import { useDispatch } from "react-redux"
@@ -51,6 +53,7 @@ export const TaskItem: React.FC<propType> = props => {
       }
     }
   )
+  const [toggleMenu, setToggleMenu] = useState(false)
 
   const intoTitleEditMode = () => {
     let title = ""
@@ -97,7 +100,7 @@ export const TaskItem: React.FC<propType> = props => {
       <li>
         <Card className={classes.root} elevation={1}>
           <CardContent>
-            <Box display="flex" alignItems="center" mb={1}>
+            <Box display="flex" alignItems="center">
               <Box mr={2}>
                 <Checkbox
                   onChange={() => dispatch(toggleTaskCompleted(data.id))}
@@ -136,55 +139,65 @@ export const TaskItem: React.FC<propType> = props => {
                   <></>
                 )}
               </Box>
+              <Box mr={2}>
+                <IconButton onClick={() => setToggleMenu(!toggleMenu)}>
+                  <AllowIcon fontSize="large" />
+                </IconButton>
+              </Box>
             </Box>
 
-            <Divider />
-
-            {dateFormOpen ? (
-              <Box display="flex" mt={1}>
-                <Box flexGrow={1}>
-                  <InlineDatePicker
-                    backCB={() => setDateFormOpen(false)}
-                    forwardCB={e => {
-                      setTaskLimit(e)
-                    }}
-                    value={data.limit}
-                  />
-                </Box>
-              </Box>
+            {toggleMenu ? (
+              <div>
+                <Divider />
+                {dateFormOpen ? (
+                  <Box display="flex" mt={1}>
+                    <Box flexGrow={1}>
+                      <InlineDatePicker
+                        backCB={() => setDateFormOpen(false)}
+                        forwardCB={e => {
+                          setTaskLimit(e)
+                        }}
+                        value={data.limit}
+                      />
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box display="flex" mt={1}>
+                    <Box ml={1}>
+                      <TaskItemBtn
+                        label="削除"
+                        onClick={() => {
+                          dispatch(removeTaskItem(data.id))
+                        }}
+                      >
+                        <DeleteIcon />
+                      </TaskItemBtn>
+                    </Box>
+                    <Box ml={3}>
+                      <TaskItemBtn
+                        label="名前変更"
+                        onClick={() => {
+                          intoTitleEditMode()
+                        }}
+                      >
+                        <CreateIcon />
+                      </TaskItemBtn>
+                    </Box>
+                    <Box ml={3}>
+                      <TaskItemBtn
+                        label="期限"
+                        onClick={() => {
+                          intoDateEditMode()
+                        }}
+                      >
+                        <LimitIcon />
+                      </TaskItemBtn>
+                    </Box>
+                  </Box>
+                )}
+              </div>
             ) : (
-              <Box display="flex" mt={1}>
-                <Box ml={1}>
-                  <TaskItemBtn
-                    label="削除"
-                    onClick={() => {
-                      dispatch(removeTaskItem(data.id))
-                    }}
-                  >
-                    <DeleteIcon />
-                  </TaskItemBtn>
-                </Box>
-                <Box ml={3}>
-                  <TaskItemBtn
-                    label="名前変更"
-                    onClick={() => {
-                      intoTitleEditMode()
-                    }}
-                  >
-                    <CreateIcon />
-                  </TaskItemBtn>
-                </Box>
-                <Box ml={3}>
-                  <TaskItemBtn
-                    label="期限"
-                    onClick={() => {
-                      intoDateEditMode()
-                    }}
-                  >
-                    <LimitIcon />
-                  </TaskItemBtn>
-                </Box>
-              </Box>
+              <div></div>
             )}
           </CardContent>
         </Card>
