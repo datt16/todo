@@ -1,18 +1,18 @@
 import {
   Box,
-  Card,
-  CardContent,
   Checkbox,
   makeStyles,
   Typography,
   Divider,
   TextField,
-  IconButton,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@material-ui/core"
 import DeleteIcon from "@material-ui/icons/Delete"
 import CreateIcon from "@material-ui/icons/Create"
 import LimitIcon from "@material-ui/icons/Schedule"
-import AllowIcon from "@material-ui/icons/ArrowDropDown"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import PropTypes from "prop-types"
 import React, { useState } from "react"
 import { useDispatch } from "react-redux"
@@ -53,7 +53,6 @@ export const TaskItem: React.FC<propType> = props => {
       }
     }
   )
-  const [toggleMenu, setToggleMenu] = useState(false)
 
   const intoTitleEditMode = () => {
     let title = ""
@@ -98,8 +97,17 @@ export const TaskItem: React.FC<propType> = props => {
   return (
     <Box mb={2}>
       <li>
-        <Card className={classes.root} elevation={1}>
-          <CardContent>
+        <Accordion
+          className={classes.root}
+          elevation={1}
+          id={`additional-${data.id}-header`}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-label={data.id}
+            onClick={event => event.stopPropagation()}
+            onFocus={event => event.stopPropagation()}
+          >
             <Box display="flex" alignItems="center">
               <Box mr={2}>
                 <Checkbox
@@ -139,68 +147,60 @@ export const TaskItem: React.FC<propType> = props => {
                   <></>
                 )}
               </Box>
-              <Box mr={2}>
-                <IconButton onClick={() => setToggleMenu(!toggleMenu)}>
-                  <AllowIcon fontSize="large" />
-                </IconButton>
-              </Box>
             </Box>
-
-            {toggleMenu ? (
-              <div>
-                <Divider />
-                {dateFormOpen ? (
-                  <Box display="flex" mt={1}>
-                    <Box flexGrow={1}>
-                      <InlineDatePicker
-                        backCB={() => setDateFormOpen(false)}
-                        forwardCB={e => {
-                          setTaskLimit(e)
-                        }}
-                        value={data.limit}
-                      />
-                    </Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div>
+              <Divider />
+              {dateFormOpen ? (
+                <Box display="flex" mt={1}>
+                  <Box flexGrow={1}>
+                    <InlineDatePicker
+                      backCB={() => setDateFormOpen(false)}
+                      forwardCB={e => {
+                        setTaskLimit(e)
+                      }}
+                      value={data.limit}
+                    />
                   </Box>
-                ) : (
-                  <Box display="flex" mt={1}>
-                    <Box ml={1}>
-                      <TaskItemBtn
-                        label="削除"
-                        onClick={() => {
-                          dispatch(removeTaskItem(data.id))
-                        }}
-                      >
-                        <DeleteIcon />
-                      </TaskItemBtn>
-                    </Box>
-                    <Box ml={3}>
-                      <TaskItemBtn
-                        label="名前変更"
-                        onClick={() => {
-                          intoTitleEditMode()
-                        }}
-                      >
-                        <CreateIcon />
-                      </TaskItemBtn>
-                    </Box>
-                    <Box ml={3}>
-                      <TaskItemBtn
-                        label="期限"
-                        onClick={() => {
-                          intoDateEditMode()
-                        }}
-                      >
-                        <LimitIcon />
-                      </TaskItemBtn>
-                    </Box>
+                </Box>
+              ) : (
+                <Box display="flex" mt={1}>
+                  <Box ml={1}>
+                    <TaskItemBtn
+                      label="削除"
+                      onClick={() => {
+                        dispatch(removeTaskItem(data.id))
+                      }}
+                    >
+                      <DeleteIcon />
+                    </TaskItemBtn>
                   </Box>
-                )}
-              </div>
-            ) : (
-              <div></div>
-            )}
-          </CardContent>
-        </Card>
+                  <Box ml={3}>
+                    <TaskItemBtn
+                      label="名前変更"
+                      onClick={() => {
+                        intoTitleEditMode()
+                      }}
+                    >
+                      <CreateIcon />
+                    </TaskItemBtn>
+                  </Box>
+                  <Box ml={3}>
+                    <TaskItemBtn
+                      label="期限"
+                      onClick={() => {
+                        intoDateEditMode()
+                      }}
+                    >
+                      <LimitIcon />
+                    </TaskItemBtn>
+                  </Box>
+                </Box>
+              )}
+            </div>
+          </AccordionDetails>
+        </Accordion>
       </li>
     </Box>
   )
