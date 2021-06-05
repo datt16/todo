@@ -8,6 +8,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  FormControlLabel,
 } from "@material-ui/core"
 import DeleteIcon from "@material-ui/icons/Delete"
 import CreateIcon from "@material-ui/icons/Create"
@@ -105,17 +106,20 @@ export const TaskItem: React.FC<propType> = props => {
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-label={data.id}
+            aria-controls={`additional-actions-content-${data.id}`}
             onClick={event => event.stopPropagation()}
             onFocus={event => event.stopPropagation()}
           >
+            <FormControlLabel
+              aria-label="Acknowledge"
+              onClick={event => event.stopPropagation()}
+              onFocus={event => event.stopPropagation()}
+              control={<Checkbox />}
+              onChange={() => dispatch(toggleTaskCompleted(data.id))}
+              checked={data.completed}
+              label=""
+            />
             <Box display="flex" alignItems="center">
-              <Box mr={2}>
-                <Checkbox
-                  onChange={() => dispatch(toggleTaskCompleted(data.id))}
-                  checked={data.completed}
-                />
-              </Box>
-
               <Box flexGrow={1} onBlur={() => setTitleFormOpen(false)}>
                 {titleFormOpen ? (
                   <TextField
@@ -124,7 +128,9 @@ export const TaskItem: React.FC<propType> = props => {
                     value={newTaskTitle}
                     onChange={e => setTaskTitle(e.target.value)}
                     onBlur={() => submit()}
+                    onSubmit={() => submit()}
                     fullWidth
+                    type="text"
                   ></TextField>
                 ) : data.completed ? (
                   <Typography variant="h6" className={styles.completed}>
@@ -147,9 +153,10 @@ export const TaskItem: React.FC<propType> = props => {
                   <></>
                 )}
               </Box>
+              <Box></Box>
             </Box>
           </AccordionSummary>
-              <Divider />
+          <Divider />
           <AccordionDetails>
             <Box display="flex" alignItems="center" flexGrow={1}>
               {dateFormOpen ? (
