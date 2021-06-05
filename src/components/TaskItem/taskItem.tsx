@@ -149,9 +149,9 @@ export const TaskItem: React.FC<propType> = props => {
               </Box>
             </Box>
           </AccordionSummary>
-          <AccordionDetails>
-            <div>
               <Divider />
+          <AccordionDetails>
+            <Box display="flex" alignItems="center" flexGrow={1}>
               {dateFormOpen ? (
                 <Box display="flex" mt={1}>
                   <Box flexGrow={1}>
@@ -198,7 +198,7 @@ export const TaskItem: React.FC<propType> = props => {
                   </Box>
                 </Box>
               )}
-            </div>
+            </Box>
           </AccordionDetails>
         </Accordion>
       </li>
