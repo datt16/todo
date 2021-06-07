@@ -83,8 +83,6 @@ interface updatePropsType {
 const updateTask = async (prop: updatePropsType) => {
   const data = prop
 
-  console.log(data.task)
-
   Object.fromEntries(
     Object.entries(data.task).filter(([, v]) => v !== undefined)
   )

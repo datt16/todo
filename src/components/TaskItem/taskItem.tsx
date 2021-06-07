@@ -6,7 +6,6 @@ import {
   Divider,
   TextField,
   Accordion,
-  AccordionSummary,
   AccordionDetails,
   FormControlLabel,
 } from "@material-ui/core"
@@ -27,6 +26,8 @@ import { TaskItemBtn } from "./taskItemButton"
 import { InlineDatePicker } from "./inlineDatePicker"
 import { LocalTaskItemType } from "../../features/task/taskSlice"
 
+import "./taskItemStyle.css"
+
 import useStateWithCallback from "use-state-with-callback"
 
 const useStyles = makeStyles({
@@ -34,6 +35,15 @@ const useStyles = makeStyles({
     minWidth: 275,
   },
 })
+
+import { withStyles } from "@material-ui/core/styles"
+import MuiAccordionSummary from "@material-ui/core/AccordionSummary"
+const AccordionSummary = withStyles({
+  content: {
+    paddingLeft: 6,
+    flexGrow: 2,
+  },
+})(MuiAccordionSummary)
 
 type propType = {
   data: LocalTaskItemType
@@ -109,6 +119,7 @@ export const TaskItem: React.FC<propType> = props => {
             aria-controls={`additional-actions-content-${data.id}`}
             onClick={event => event.stopPropagation()}
             onFocus={event => event.stopPropagation()}
+            className="MuiAccordionSummary-content"
           >
             <FormControlLabel
               aria-label="Acknowledge"
@@ -120,9 +131,10 @@ export const TaskItem: React.FC<propType> = props => {
               label=""
             />
             <Box display="flex" alignItems="center">
-              <Box flexGrow={1} onBlur={() => setTitleFormOpen(false)}>
+              <Box onBlur={() => setTitleFormOpen(false)}>
                 {titleFormOpen ? (
                   <TextField
+                    autoFocus
                     placeholder="ここにタスク名を入力"
                     name="newTaskTitle"
                     value={newTaskTitle}
