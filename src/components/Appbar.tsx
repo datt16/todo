@@ -11,10 +11,10 @@ import {
   MenuItem,
 } from "@material-ui/core"
 import MenuIcon from "@material-ui/icons/Menu"
-import { useDispatch, useSelector } from "react-redux"
-import { Logout } from "../features/user/userSlice"
-import { login } from "./Auth"
+import { useSelector } from "react-redux"
 import { AppState } from "../app/store"
+
+import { UserAgentButton } from "./UserAgentButton"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,21 +28,8 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export const CustomAppBar:React.FC = () => {
-  const dispatch = useDispatch()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
-  const open = Boolean(anchorEl)
-
-  const { uid, iconURL, displayName } = useSelector(
-    (state: AppState) => state.user
-  )
+export const CustomAppBar: React.FC = () => {
+  const { uid } = useSelector((state: AppState) => state.user)
 
   const classes = useStyles()
   return (
@@ -56,55 +43,12 @@ export const CustomAppBar:React.FC = () => {
         >
           <MenuIcon />
         </IconButton>
+
         <Typography variant="h6" className={classes.title}>
           タスク管理アプリ
         </Typography>
-        {uid !== "" ? (
-          <div>
-            <IconButton
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={e => handleMenu(e)}
-              color="inherit"
-            >
-              <Avatar alt={displayName} src={iconURL}></Avatar>
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={open}
-              onClose={handleClose}
-            >
-              <MenuItem
-                onClick={() => {
-                  handleClose
-                  dispatch(Logout())
-                }}
-              >
-                ログアウト
-              </MenuItem>
-            </Menu>
-          </div>
-        ) : (
-          <Button
-            color="inherit"
-            onClick={() => {
-              login()
-            }}
-          >
-            ログイン
-          </Button>
-        )}
+
+        <UserAgentButton uid={uid} />
       </Toolbar>
     </AppBar>
   )
