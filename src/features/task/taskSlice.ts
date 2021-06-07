@@ -10,23 +10,31 @@ type TaskTitleType = string | null
 export type LocalTaskItemType = {
   title: TaskTitleType
   completed: boolean
-  created: string
+  created?: Date
+  limit: Date | null
   id: TaskIDtype
 }
 
 type RemoteTaskItemType = {
   title: TaskTitleType
   completed: boolean
-  created: string
+  created?: Date
+  limit: Date | null
 }
 
 interface TaskState {
   tasks: Array<LocalTaskItemType>
   loading: boolean
   error: string | null
+  limit?: Date | null
 }
 
-const initialState: TaskState = { tasks: [], loading: false, error: null }
+const initialState: TaskState = {
+  tasks: [],
+  loading: false,
+  error: null,
+  limit: undefined,
+}
 
 export const slice = createSlice({
   name: "tasker",
@@ -64,7 +72,7 @@ export const slice = createSlice({
   },
 })
 
-/* sub-actions */
+/* sub-actions : action内で呼び出される関数(Ex: firebaseへのpush) */
 
 interface updatePropsType {
   targetID: string
@@ -74,6 +82,10 @@ interface updatePropsType {
 
 const updateTask = async (prop: updatePropsType) => {
   const data = prop
+
+  Object.fromEntries(
+    Object.entries(data.task).filter(([, v]) => v !== undefined)
+  )
   const target = data.targetID
   const changedTask = data.task
   const uid = data.UID
@@ -97,7 +109,7 @@ const getTasks = async (uid: UIDtype) => {
     .collection("users")
     .doc(uid)
     .collection("tasks")
-    .orderBy("title")
+    .orderBy("created")
   const snapshots = await colRef.get()
 
   const docs: Array<LocalTaskItemType> = []
@@ -107,16 +119,33 @@ const getTasks = async (uid: UIDtype) => {
     docs.push({
       title: data.title,
       completed: data.completed,
-      created: data.created,
+      created: data.created.toDate(),
+      limit: data.limit ? data.limit.toDate() : null,
       id: doc.id,
     })
   })
   return docs
 }
 
-/* --- actions ---*/
+/* --- actions : 外部からstateに変更を加えるときに呼び出される ---*/
 
 type FetchItems = () => (dispatch: AppDispatch, getState: AppGetState) => void
+
+type ToggleTaskCompleted = (
+  target: UIDtype
+) => (dispatch: AppDispatch, getState: AppGetState) => void
+
+type RemoveTaskItem = (
+  target: TaskIDtype
+) => (dispatch: AppDispatch, getState: AppGetState) => void
+
+type UpdateTask = (
+  updatedTaskItem: LocalTaskItemType
+) => (dispatch: AppDispatch, getState: AppGetState) => void
+
+type CreateNewTask = (
+  title: TaskTitleType
+) => (dispatch: AppDispatch, getState: AppGetState) => void
 
 export const fetchItems: FetchItems = () => async (dispatch, getState) => {
   const uid = getState().user.uid
@@ -132,9 +161,30 @@ export const fetchItems: FetchItems = () => async (dispatch, getState) => {
   }
 }
 
-type ToggleTaskCompleted = (
-  target: UIDtype
-) => (dispatch: AppDispatch, getState: AppGetState) => void
+export const updateTaskItem: UpdateTask =
+  (After: LocalTaskItemType) => async (dispatch, getState) => {
+    const uid: UIDtype = getState().user.uid
+    const data: {
+      UID: UIDtype
+      targetID: TaskIDtype
+      task: RemoteTaskItemType
+    } = {
+      UID: uid,
+      targetID: After.id,
+      task: {
+        title: After.title,
+        completed: After.completed,
+        created: After.created,
+        limit: After.limit,
+      },
+    }
+    try {
+      await updateTask(data)
+      dispatch(fetchItems())
+    } catch (error) {
+      dispatch(fetchFailure(error.stack))
+    }
+  }
 
 export const toggleTaskCompleted: ToggleTaskCompleted =
   target => async (dispatch, getState) => {
@@ -149,12 +199,14 @@ export const toggleTaskCompleted: ToggleTaskCompleted =
         ? {
             title: "",
             completed: false,
-            created: "",
+            created: undefined,
+            limit: null,
           }
         : {
             title: targetItem.title,
             completed: targetItem.completed,
             created: targetItem.created,
+            limit: targetItem.limit,
           }
 
     const data: {
@@ -174,10 +226,6 @@ export const toggleTaskCompleted: ToggleTaskCompleted =
     }
   }
 
-type RemoveTaskItem = (
-  target: TaskIDtype
-) => (dispatch: AppDispatch, getState: AppGetState) => void
-
 export const removeTaskItem: RemoveTaskItem =
   target => async (dispatch, getState) => {
     const uid: UIDtype = getState().user.uid
@@ -191,14 +239,10 @@ export const removeTaskItem: RemoveTaskItem =
     }
   }
 
-type CreateNewTask = (
-  title: TaskTitleType
-) => (dispatch: AppDispatch, getState: AppGetState) => void
-
 export const createNewTask: CreateNewTask =
   title => async (dispatch, getState) => {
     const uid = getState().user.uid
-    const createdDate = moment().format("YYYY-MM-DD HH:mm:ssZ").toString()
+    const createdDate = moment().toDate()
     db.collection("users").doc(uid).collection("tasks").add({
       title: title,
       completed: false,
