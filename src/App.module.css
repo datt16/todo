@@ -21,3 +21,11 @@
 .completed {
   text-decoration: line-through;
 }
+
+.content {
+  flex-grow: 1;
+}
+
+.root {
+  display: flex;
+}
