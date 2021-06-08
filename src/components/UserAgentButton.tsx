@@ -1,21 +1,37 @@
 import React, { useState } from "react"
 import {
   Avatar,
+  Box,
   Button,
+  createStyles,
   IconButton,
+  makeStyles,
   Menu,
   MenuItem,
+  Theme,
+  Typography,
 } from "@material-ui/core"
+import MoreDetailIcon from "@material-ui/icons/ArrowDropDown"
 import { useDispatch, useSelector } from "react-redux"
 import { Logout } from "../features/user/userSlice"
 import { login } from "./Auth"
 import { AppState } from "../app/store"
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    avater: {
+      width: theme.spacing(7),
+      height: theme.spacing(7),
+    },
+  })
+)
 
 type PropType = {
   uid: string
 }
 
 export const UserAgentButton: React.FC<PropType> = (props: PropType) => {
+  const classes = useStyles()
   const uid = props.uid
   const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -28,21 +44,31 @@ export const UserAgentButton: React.FC<PropType> = (props: PropType) => {
   }
   const open = Boolean(anchorEl)
 
-  const { iconURL, displayName } = useSelector(
-    (state: AppState) => state.user
-  )
+  const { iconURL, displayName } = useSelector((state: AppState) => state.user)
 
   return uid !== "" ? (
     <div>
-      <IconButton
-        aria-label="account of current user"
-        aria-controls="menu-appbar"
-        aria-haspopup="true"
-        onClick={e => handleMenu(e)}
-        color="inherit"
-      >
-        <Avatar alt={displayName} src={iconURL}></Avatar>
-      </IconButton>
+      <Avatar
+        sizes="small"
+        alt={displayName}
+        src={iconURL}
+        className={classes.avater}
+      ></Avatar>
+      <Box display="flex" justifyContent="center" mt={1}>
+        <Box display="flex" alignContent="center">
+          <Typography variant="h6">{displayName}</Typography>
+          <IconButton
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={e => handleMenu(e)}
+            color="inherit"
+            size="small"
+          >
+            <MoreDetailIcon fontSize="inherit" />
+          </IconButton>
+        </Box>
+      </Box>
       <Menu
         id="menu-appbar"
         anchorEl={anchorEl}

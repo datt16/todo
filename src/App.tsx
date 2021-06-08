@@ -4,19 +4,16 @@ import {
   Container,
   createStyles,
   Drawer,
-  Hidden,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   makeStyles,
   Theme,
-  Typography,
 } from "@material-ui/core"
 import { Tasks } from "./features/task/Tasks"
 import { InputForm } from "./components/AddTaskForm"
 import Auth from "./components/Auth"
-import { CustomAppBar } from "./components/Appbar"
 
 import { useSelector } from "react-redux"
 
@@ -52,7 +49,6 @@ const App: React.FC = () => {
   const classes = useStyles()
   return (
     <div className={classes.root}>
-      {/* <CustomAppBar /> */}
       <div className={classes.drawer}>
         <Drawer
           variant="permanent"
@@ -61,10 +57,15 @@ const App: React.FC = () => {
             paper: classes.drawerPaper,
           }}
         >
+          <Box
+            py={6}
+            display="flex"
+            justifyContent="center"
+            alignContent="center"
+          >
+            <UserAgentButton uid={uid} />
+          </Box>
           <List>
-            <Box py="3" display="flex" justifyContent="center" alignContent="center">
-              <Typography variant="h5">タスク管理アプリ</Typography>
-            </Box>
             <ListItem button key={"text"}>
               <ListItemIcon>
                 <InboxIcon />
@@ -72,7 +73,6 @@ const App: React.FC = () => {
               <ListItemText primary={"text"} />
             </ListItem>
           </List>
-          <UserAgentButton uid={uid} />
         </Drawer>
       </div>
       <div className={classes.content}>
