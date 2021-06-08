@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type PropType = {
   uid: string
+  showType: "icon" | "board"
 }
 
 export const UserAgentButton: React.FC<PropType> = (props: PropType) => {
@@ -48,15 +49,8 @@ export const UserAgentButton: React.FC<PropType> = (props: PropType) => {
 
   return uid !== "" ? (
     <div>
-      <Avatar
-        sizes="small"
-        alt={displayName}
-        src={iconURL}
-        className={classes.avater}
-      ></Avatar>
-      <Box display="flex" justifyContent="center" mt={1}>
-        <Box display="flex" alignContent="center">
-          <Typography variant="h6">{displayName}</Typography>
+      {props.showType === "icon" ? (
+        <div>
           <IconButton
             aria-label="account of current user"
             aria-controls="menu-appbar"
@@ -65,10 +59,35 @@ export const UserAgentButton: React.FC<PropType> = (props: PropType) => {
             color="inherit"
             size="small"
           >
-            <MoreDetailIcon fontSize="inherit" />
+            <Avatar sizes="small" alt={displayName} src={iconURL}></Avatar>
           </IconButton>
-        </Box>
-      </Box>
+        </div>
+      ) : (
+        <div>
+          <Avatar
+            sizes="small"
+            alt={displayName}
+            src={iconURL}
+            className={classes.avater}
+          ></Avatar>
+          <Box display="flex" justifyContent="center" mt={1}>
+            <Box display="flex" alignContent="center">
+              <Typography variant="h6">{displayName}</Typography>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={e => handleMenu(e)}
+                color="inherit"
+                size="small"
+              >
+                <MoreDetailIcon fontSize="inherit" />
+              </IconButton>
+            </Box>
+          </Box>
+        </div>
+      )}
+
       <Menu
         id="menu-appbar"
         anchorEl={anchorEl}
