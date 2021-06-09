@@ -27,8 +27,8 @@ export const InputForm: React.FC = () => {
               fullWidth
             ></TextField>
           </Box>
-          <Box>
-            <Button type="button" onClick={e => submit(e)}>
+          <Box ml={1}>
+            <Button type="button" onClick={e => submit(e)} variant="outlined">
               追加
             </Button>
           </Box>

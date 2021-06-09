@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "block",
     },
     taskArea: {
-      height: document.documentElement.clientHeight * 0.8,
+      height: document.documentElement.clientHeight - 100,
       overflowY: "auto",
     },
     InputArea: {
@@ -104,7 +104,7 @@ const App: React.FC = () => {
             <Box display="flex" justifyContent="center" flexGrow={1}>
               <Container maxWidth="sm" className={classes.InputArea}>
                 <Paper elevation={0}>
-                  <Box >
+                  <Box>
                     <InputForm />
                   </Box>
                 </Paper>
