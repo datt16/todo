@@ -16,7 +16,6 @@ export const InputForm: React.FC = () => {
 
   return (
     <div>
-      <h2>新規タスク</h2>
       <form onSubmit={e => e.preventDefault()}>
         <Box display="flex">
           <Box flexGrow={1}>

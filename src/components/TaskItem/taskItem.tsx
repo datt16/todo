@@ -25,9 +25,8 @@ import {
 import { TaskItemBtn } from "./taskItemButton"
 import { InlineDatePicker } from "./inlineDatePicker"
 import { LocalTaskItemType } from "../../features/task/taskSlice"
-
+import { CustomSnackbar } from "../snackbar"
 import "./taskItemStyle.css"
-
 import useStateWithCallback from "use-state-with-callback"
 
 const useStyles = makeStyles({
@@ -64,6 +63,7 @@ export const TaskItem: React.FC<propType> = props => {
       }
     }
   )
+  const [openSnackbar, setOpenSnackbar] = useState(false)
 
   const intoTitleEditMode = () => {
     let title = ""
@@ -100,6 +100,7 @@ export const TaskItem: React.FC<propType> = props => {
       limit: newTaskLimit,
     }
     dispatch(updateTaskItem(After))
+    setOpenSnackbar(true)
     setTitleFormOpen(false)
     setTaskTitle("")
     setTaskLimit(null)
@@ -107,6 +108,7 @@ export const TaskItem: React.FC<propType> = props => {
 
   return (
     <Box mb={2}>
+      <CustomSnackbar text="_" open={openSnackbar} />
       <li>
         <Accordion
           className={classes.root}

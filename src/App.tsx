@@ -11,6 +11,7 @@ import {
   ListItemText,
   makeStyles,
   Theme,
+  Paper,
 } from "@material-ui/core"
 import { Tasks } from "./features/task/Tasks"
 import { InputForm } from "./components/AddTaskForm"
@@ -46,6 +47,15 @@ const useStyles = makeStyles((theme: Theme) =>
     header: {
       display: "block",
     },
+    taskArea: {
+      height: document.documentElement.clientHeight * 0.8,
+      overflowY: "auto",
+    },
+    InputArea: {
+      position: "absolute",
+      bottom: 20,
+      zIndex: 1000,
+    },
   })
 )
 
@@ -73,7 +83,7 @@ const App: React.FC = () => {
                 justifyContent="center"
                 alignContent="center"
               >
-                <UserAgentButton uid={uid} showType="board"/>
+                <UserAgentButton uid={uid} showType="board" />
               </Box>
               <List>
                 <ListItem button key={"text"}>
@@ -88,10 +98,18 @@ const App: React.FC = () => {
         </Hidden>
         <div className={classes.content}>
           <Auth>
-            <Container maxWidth="sm">
-              <InputForm />
+            <Container maxWidth="lg" className={classes.taskArea}>
               <Tasks />
             </Container>
+            <Box display="flex" justifyContent="center" flexGrow={1}>
+              <Container maxWidth="sm" className={classes.InputArea}>
+                <Paper elevation={0}>
+                  <Box >
+                    <InputForm />
+                  </Box>
+                </Paper>
+              </Container>
+            </Box>
           </Auth>
         </div>
       </div>
