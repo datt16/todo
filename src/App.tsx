@@ -18,9 +18,11 @@ import { InputForm } from "./components/AddTaskForm"
 import Auth from "./components/Auth"
 
 import { useSelector } from "react-redux"
+import { AppState } from "./app/store"
 
 import InboxIcon from "@material-ui/icons/Inbox"
-import { AppState } from "./app/store"
+import CheckedIcon from "@material-ui/icons/CheckBox"
+
 import { UserAgentButton } from "./components/UserAgentButton"
 import { CustomAppBar } from "./components/Appbar"
 
@@ -90,7 +92,13 @@ const App: React.FC = () => {
                   <ListItemIcon>
                     <InboxIcon />
                   </ListItemIcon>
-                  <ListItemText primary={"text"} />
+                  <ListItemText primary={"タスクリスト"} />
+                </ListItem>
+                <ListItem key={"text1"}>
+                  <ListItemIcon>
+                    <CheckedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"チェック済み"} />
                 </ListItem>
               </List>
             </Drawer>
