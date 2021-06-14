@@ -16,7 +16,6 @@ const useStyles = makeStyles(() => ({
 
 export const CustomAppBar: React.FC = () => {
   const { uid } = useSelector((state: AppState) => state.user)
-
   const classes = useStyles()
   return (
     <AppBar position="static">

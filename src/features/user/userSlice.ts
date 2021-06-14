@@ -8,6 +8,7 @@ interface UserState {
   signed: boolean
   iconURL: string
   displayName: string
+  sigining: boolean
 }
 
 const initialState: UserState = {
@@ -15,6 +16,7 @@ const initialState: UserState = {
   signed: false,
   iconURL: "",
   displayName: "",
+  sigining: true,
 }
 
 export const slice = createSlice({
